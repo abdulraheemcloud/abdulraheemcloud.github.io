@@ -1,64 +1,173 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AWS Cloud Practitioner Guide</title>
-    <link rel="stylesheet" href="style.css">
+  <title>AWS Cloud Practitioner Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f9;
+    }
+
+    header {
+      background: #232f3e;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    nav {
+      background: #131a22;
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    section {
+      padding: 30px;
+      margin: 20px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    h2 {
+      color: #232f3e;
+    }
+
+    pre {
+      background: #1e1e1e;
+      color: #00ff90;
+      padding: 15px;
+      overflow-x: auto;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #232f3e;
+      color: white;
+    }
+  </style>
 </head>
+
 <body>
 
 <header>
-    <h1>AWS Cloud Practitioner Complete Guide</h1>
-    <nav>
-        <a href="#concepts">Cloud Concepts</a>
-        <a href="#security">Security</a>
-        <a href="#services">Core Services</a>
-        <a href="#billing">Billing</a>
-    </nav>
+  <h1>AWS Cloud Practitioner Complete Guide</h1>
+  <p>Hands-On | Interview Questions | Linux Practice</p>
 </header>
 
-<section id="concepts">
-    <h2>Cloud Concepts</h2>
-    <ul>
-        <li>What is Cloud Computing</li>
-        <li>IaaS, PaaS, SaaS</li>
-        <li>Shared Responsibility Model</li>
-        <li>High Availability vs Fault Tolerance</li>
-    </ul>
+<nav>
+  <a href="#ec2">EC2</a>
+  <a href="#s3">S3</a>
+  <a href="#vpc">VPC</a>
+  <a href="#linux">Linux</a>
+  <a href="#tasks">Tasks</a>
+</nav>
+
+<section id="ec2">
+  <h2>Amazon EC2</h2>
+  <p><b>Definition:</b> Virtual server in AWS.</p>
+  <p><b>Use Case:</b> Host websites and backend applications.</p>
+
+  <h3>Hands-On Steps</h3>
+  <ol>
+    <li>Launch Instance</li>
+    <li>Select Amazon Linux</li>
+    <li>Choose t2.micro</li>
+    <li>Allow HTTP & SSH</li>
+    <li>Launch</li>
+  </ol>
+
+  <h3>Install Web Server</h3>
+  <pre>
+sudo yum install httpd -y
+sudo systemctl start httpd
+echo "AWS EC2 Working" | sudo tee /var/www/html/index.html
+  </pre>
+
+  <h3>Interview Question</h3>
+  <p>Q: What is Security Group?<br>
+     A: Stateful firewall attached to instance.</p>
 </section>
 
-<section id="security">
-    <h2>Security & Compliance</h2>
-    <ul>
-        <li>IAM Users, Roles, Policies</li>
-        <li>MFA</li>
-        <li>Encryption Basics</li>
-        <li>Least Privilege Principle</li>
-    </ul>
+<section id="s3">
+  <h2>Amazon S3</h2>
+  <p><b>Definition:</b> Object storage service.</p>
+
+  <h3>Hands-On</h3>
+  <ol>
+    <li>Create Bucket</li>
+    <li>Upload index.html</li>
+    <li>Enable Static Website Hosting</li>
+  </ol>
+
+  <h3>Interview Question</h3>
+  <p>Q: Difference between S3 and EBS?<br>
+     A: S3 = Object storage, EBS = Block storage.</p>
 </section>
 
-<section id="services">
-    <h2>Core AWS Services</h2>
-    <ul>
-        <li>EC2</li>
-        <li>S3</li>
-        <li>VPC</li>
-        <li>RDS</li>
-        <li>CloudWatch</li>
-    </ul>
+<section id="vpc">
+  <h2>Amazon VPC</h2>
+  <p><b>Definition:</b> Private network inside AWS.</p>
+
+  <h3>Hands-On</h3>
+  <ol>
+    <li>Create VPC (10.0.0.0/16)</li>
+    <li>Create Public Subnet</li>
+    <li>Attach Internet Gateway</li>
+    <li>Add Route 0.0.0.0/0</li>
+  </ol>
+
+  <h3>Interview Question</h3>
+  <p>Q: Security Group vs NACL?<br>
+     A: SG = Stateful, NACL = Stateless.</p>
 </section>
 
-<section id="billing">
-    <h2>Billing & Pricing</h2>
-    <ul>
-        <li>On-Demand Pricing</li>
-        <li>Reserved Instances</li>
-        <li>Spot Instances</li>
-        <li>AWS Budgets</li>
-    </ul>
+<section id="linux">
+  <h2>Linux Practice Commands</h2>
+
+  <h3>sudo</h3>
+  <pre>sudo yum update -y</pre>
+
+  <h3>nano</h3>
+  <pre>sudo nano file.txt</pre>
+
+  <h3>vim</h3>
+  <pre>
+sudo vim file.txt
+i  (insert mode)
+:wq (save & exit)
+  </pre>
+
+  <h3>echo</h3>
+  <pre>
+echo "Hello AWS" > file.txt
+echo "New Line" >> file.txt
+  </pre>
+</section>
+
+<section id="tasks">
+  <h2>Practice Tasks</h2>
+
+  <ul>
+    <li>Launch EC2 and host webpage</li>
+    <li>Create S3 static website</li>
+    <li>Create IAM user with limited access</li>
+    <li>Create custom VPC</li>
+    <li>Setup budget alert</li>
+  </ul>
 </section>
 
 <footer>
-    <p>© 2026 Abdul Raheem | AWS Cloud Learning</p>
+  © 2026 Abdul Raheem | AWS Cloud Learning Platform
 </footer>
 
 </body>
