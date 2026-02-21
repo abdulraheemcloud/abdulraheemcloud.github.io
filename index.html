@@ -1,333 +1,2779 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AWS Hands-On Lab - Practical training for EC2, S3, IAM, VPC, RDS, CloudWatch, and Load Balancers. Step-by-step tutorials with real commands.">
-    <title>Cloud Hands-On Lab – AWS Practical Training</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Junior Cloud Computing Associate</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#eef2ff;
+  --surface:#fff;
+  --card:#fff;
+  --border:#c7d2fe;
+  --aws:#ff9900;
+  --aws2:#e68a00;
+  --blue:#2563eb;
+  --blue-l:#dbeafe;
+  --green:#059669;
+  --green-l:#d1fae5;
+  --red:#dc2626;
+  --red-l:#fee2e2;
+  --yellow:#d97706;
+  --yellow-l:#fef3c7;
+  --purple:#7c3aed;
+  --purple-l:#ede9fe;
+  --cyan:#0891b2;
+  --cyan-l:#cffafe;
+  --text:#0f172a;
+  --text2:#1e293b;
+  --muted:#475569;
+  --muted2:#94a3b8;
+  --easy:#059669;
+  --medium:#d97706;
+  --hard:#dc2626;
+  --shadow:0 2px 8px rgba(0,0,0,.08),0 8px 32px rgba(37,99,235,.06);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.1),0 32px 64px rgba(37,99,235,.1);
+  --r:14px;
+  --r-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#c7d2fe;border-radius:99px}
+
+/* HEADER */
+.hdr{background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:200;padding:0 24px}
+.hdr-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:66px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-box{background:var(--aws);color:#000;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;padding:7px 13px;border-radius:var(--r-sm);letter-spacing:.5px;white-space:nowrap}
+.logo-text{font-size:15px;font-weight:800;color:var(--text);line-height:1.2}
+.logo-sub{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.hdr-right{display:flex;align-items:center;gap:16px}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{width:180px;height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--aws),var(--blue));border-radius:99px;width:0%;transition:width .5s}
+.prog-label{font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--muted);white-space:nowrap}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 40%,#2563eb 70%,#0891b2 100%);color:#fff;padding:64px 24px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(255,153,0,.15) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(255,255,255,.08) 0%,transparent 40%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:60px;background:var(--bg);clip-path:ellipse(55% 100% at 50% 100%)}
+.hero-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,153,0,.25);border:1px solid rgba(255,153,0,.5);color:#fbbf24;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;border-radius:99px;margin-bottom:20px}
+.pulse{width:7px;height:7px;background:#fbbf24;border-radius:50%;animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hero h1{font-size:clamp(28px,4vw,52px);font-weight:800;line-height:1.15;margin-bottom:16px}
+.hero h1 em{font-style:normal;color:#fbbf24}
+.hero-desc{font-size:16px;opacity:.85;line-height:1.75;margin-bottom:32px;max-width:560px}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-n{font-size:30px;font-weight:800;color:#fbbf24;font-family:'IBM Plex Mono',monospace}
+.stat-l{font-size:11px;opacity:.75;margin-top:2px;text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+.hero-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:28px;min-width:260px;backdrop-filter:blur(10px)}
+.hero-card h3{font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.7;margin-bottom:16px}
+.module-pill{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.m-num{background:var(--aws);color:#000;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.m-name{font-size:13px;font-weight:600;opacity:.9}
+
+/* TABS */
+.tabs-wrap{max-width:1400px;margin:40px auto 0;padding:0 24px}
+.tab-bar{display:flex;gap:6px;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:6px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:130px;padding:10px 16px;border:none;border-radius:var(--r-sm);background:transparent;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:6px}
+.tab-btn.active{background:linear-gradient(135deg,var(--blue),#1d4ed8);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.3)}
+.tab-btn:hover:not(.active){background:var(--blue-l);color:var(--blue)}
+
+/* CONTENT */
+.content{max-width:1400px;margin:0 auto;padding:32px 24px 80px}
+.tab-panel{display:none;animation:fadeIn .3s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION TITLE */
+.sec-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.sec-sub{font-size:14px;color:var(--muted);margin-bottom:28px}
+.divider-line{height:2px;background:linear-gradient(90deg,var(--border),transparent);margin-bottom:28px}
+
+/* MODULE GRID */
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.mod-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .25s;box-shadow:var(--shadow)}
+.mod-card:hover{border-color:var(--blue);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.mod-top{padding:20px;display:flex;gap:14px;align-items:flex-start}
+.mod-icon{min-width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.mod-info h3{font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3}
+.mod-info p{font-size:12px;color:var(--muted);line-height:1.5}
+.mod-bottom{border-top:2px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:16px}
+.mod-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;display:flex;align-items:center;gap:5px}
+.pill-lab{background:var(--cyan-l);color:var(--cyan)}
+.pill-task{background:var(--purple-l);color:var(--purple)}
+.pill-quiz{background:var(--green-l);color:var(--green)}
+.mod-status{margin-left:auto;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;font-family:'IBM Plex Mono',monospace;letter-spacing:.5px}
+.s-todo{background:#f1f5f9;color:var(--muted)}
+.s-active{background:var(--yellow-l);color:var(--yellow);border:1px solid var(--yellow)}
+.s-done{background:var(--green-l);color:var(--green);border:1px solid var(--green)}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:500;overflow-y:auto;padding:32px 20px;backdrop-filter:blur(4px)}
+.overlay.open{display:flex;justify-content:center;align-items:flex-start}
+.modal{background:var(--surface);border:2px solid var(--border);border-radius:20px;width:100%;max-width:900px;animation:slideUp .3s ease;margin:auto}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.modal-hdr{padding:24px 28px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:16px;justify-content:space-between}
+.modal-title-wrap{display:flex;align-items:center;gap:14px}
+.modal-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.modal-title{font-size:18px;font-weight:800;color:var(--text)}
+.modal-sub{font-size:12px;color:var(--muted)}
+.close-btn{width:38px;height:38px;background:var(--bg);border:2px solid var(--border);border-radius:var(--r-sm);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--muted)}
+.close-btn:hover{background:var(--red-l);border-color:var(--red);color:var(--red)}
+.modal-body{padding:28px;max-height:75vh;overflow-y:auto}
+
+/* LESSON SWITCHER */
+.lesson-nav{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.lnav-btn{padding:9px 18px;border:2px solid var(--border);border-radius:var(--r-sm);background:transparent;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.lnav-btn.active{border-color:var(--blue);background:var(--blue);color:#fff}
+.lpane{display:none}
+.lpane.active{display:block}
+
+/* OVERVIEW BOX */
+.overview-box{background:linear-gradient(135deg,var(--blue-l),#f0f9ff);border:2px solid #bfdbfe;border-radius:var(--r);padding:20px 24px;margin-bottom:24px}
+.overview-box h4{font-size:13px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.overview-box p{font-size:14px;color:var(--text2);line-height:1.8}
+
+/* OBJECTIVES */
+.objectives{margin-bottom:24px}
+.objectives h4{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.obj-list{display:flex;flex-direction:column;gap:8px}
+.obj-item{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text2);line-height:1.6}
+.obj-check{color:var(--green);font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* HANDS-ON STEPS */
+.lab-intro{background:var(--yellow-l);border:2px solid #fde68a;border-radius:var(--r);padding:14px 18px;margin-bottom:24px;font-size:13px;color:#92400e;display:flex;gap:10px;align-items:flex-start}
+.lab-intro-icon{font-size:18px;flex-shrink:0}
+.step-block{margin-bottom:32px}
+.step-hdr{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.step-num{min-width:36px;height:36px;background:var(--blue);color:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;flex-shrink:0;margin-top:1px}
+.step-txt h4{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.step-txt p{font-size:13px;color:var(--muted);line-height:1.6}
+.step-body{padding-left:50px}
+.step-body p{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:12px}
+.step-body ul{margin-bottom:12px;padding-left:20px}
+.step-body ul li{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:4px}
+.note-box{background:var(--cyan-l);border-left:4px solid var(--cyan);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#164e63}
+.note-box strong{display:block;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--cyan)}
+.warn-box{background:var(--yellow-l);border-left:4px solid var(--yellow);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#78350f}
+.warn-box strong{display:block;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--yellow)}
+.tip-box{background:var(--green-l);border-left:4px solid var(--green);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#064e3b}
+.tip-box strong{display:block;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--green)}
+
+/* CODE BLOCK */
+.code-wrap{background:#0f172a;border-radius:var(--r);overflow:hidden;margin-bottom:16px;border:2px solid #1e293b}
+.code-top{background:#1e293b;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.code-lang{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:8px}
+.lang-dot{width:8px;height:8px;border-radius:50%}
+.dot-bash{background:#22d3ee}
+.dot-python{background:#fbbf24}
+.dot-json{background:#a78bfa}
+.dot-yaml{background:#4ade80}
+.copy-btn{background:transparent;border:1px solid #334155;border-radius:6px;color:#94a3b8;font-size:11px;font-family:'IBM Plex Mono',monospace;padding:4px 10px;cursor:pointer;transition:all .2s}
+.copy-btn:hover{border-color:#22d3ee;color:#22d3ee}
+.code-wrap pre{padding:20px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.8;color:#e2e8f0}
+.c-comment{color:#4a5568;font-style:italic}
+.c-cmd{color:#22d3ee}
+.c-flag{color:#fbbf24}
+.c-str{color:#4ade80}
+.c-kw{color:#f472b6}
+.c-num{color:#a78bfa}
+.c-var{color:#fb923c}
+
+/* SEPARATOR */
+.step-sep{height:2px;background:linear-gradient(90deg,var(--border),transparent);margin:24px 0}
+
+/* TASKS TAB */
+.task-filter-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.filter-btn{padding:8px 18px;border:2px solid var(--border);border-radius:99px;background:var(--surface);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif}
+.filter-btn:hover{border-color:var(--blue);color:var(--blue)}
+.filter-btn.f-all.on{background:var(--text);border-color:var(--text);color:#fff}
+.filter-btn.f-easy.on{background:var(--green);border-color:var(--green);color:#fff}
+.filter-btn.f-medium.on{background:var(--yellow);border-color:var(--yellow);color:#fff}
+.filter-btn.f-hard.on{background:var(--red);border-color:var(--red);color:#fff}
+.tasks-grid{display:flex;flex-direction:column;gap:12px}
+.task-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:18px 20px;display:flex;gap:14px;align-items:flex-start;transition:all .2s;cursor:pointer;box-shadow:var(--shadow)}
+.task-card:hover{border-color:var(--blue);box-shadow:var(--shadow-lg)}
+.task-check{min-width:24px;height:24px;border:2.5px solid var(--border2);border-radius:7px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;margin-top:2px;flex-shrink:0}
+.task-check.done{background:var(--green);border-color:var(--green)}
+.task-main{flex:1}
+.task-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.diff-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.8px;font-family:'IBM Plex Mono',monospace}
+.db-easy{background:var(--green-l);color:var(--green);border:1px solid #a7f3d0}
+.db-medium{background:var(--yellow-l);color:var(--yellow);border:1px solid #fde68a}
+.db-hard{background:var(--red-l);color:var(--red);border:1px solid #fecaca}
+.task-main h4{font-size:14px;font-weight:700;color:var(--text)}
+.task-main p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:10px}
+.task-tags{display:flex;gap:6px;flex-wrap:wrap}
+.ttag{font-size:10px;padding:3px 8px;border-radius:6px;background:var(--blue-l);color:var(--blue);font-family:'IBM Plex Mono',monospace;font-weight:600;border:1px solid #bfdbfe}
+
+/* CHECKPOINT */
+.cp-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow)}
+.cp-hdr{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--border)}
+.cp-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.cp-hdr h3{font-size:16px;font-weight:800;color:var(--text)}
+.cp-hdr span{font-size:12px;color:var(--muted)}
+.question-block{margin-bottom:20px}
+.q-text{font-size:14px;font-weight:600;color:var(--text);line-height:1.65;margin-bottom:12px}
+.q-num{color:var(--blue);font-family:'IBM Plex Mono',monospace;margin-right:6px}
+.options{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:2px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:all .2s;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:10px;background:var(--surface)}
+.opt:hover{border-color:var(--blue);background:var(--blue-l)}
+.opt.correct{border-color:var(--green)!important;background:var(--green-l)!important;color:var(--green)!important}
+.opt.wrong{border-color:var(--red)!important;background:var(--red-l)!important;color:var(--red)!important}
+.opt.selected{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.opt-letter{min-width:28px;height:28px;border-radius:6px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;flex-shrink:0;border:2px solid var(--border)}
+
+/* LINUX COMMANDS */
+.cmd-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.cmd-filter{padding:7px 14px;border:2px solid var(--border);border-radius:99px;background:var(--surface);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif}
+.cmd-filter.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.cmd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.cmd-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all .2s;box-shadow:var(--shadow)}
+.cmd-card:hover{border-color:var(--purple);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.cmd-top{background:#0f172a;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.cmd-name{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:#22d3ee}
+.cmd-cat-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:rgba(255,255,255,.1);color:#94a3b8;font-family:'IBM Plex Mono',monospace;letter-spacing:.5px}
+.cmd-body{padding:14px 18px}
+.cmd-desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:10px}
+.cmd-syntax{font-size:12px;font-weight:600;color:var(--purple);margin-bottom:8px;font-family:'IBM Plex Mono',monospace}
+.cmd-eg{background:#0f172a;border-radius:var(--r-sm);padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4ade80;line-height:1.7}
+
+/* FINAL ASSESSMENT */
+.assess-intro{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;border-radius:var(--r);padding:28px;margin-bottom:28px}
+.assess-intro h3{font-size:20px;font-weight:800;margin-bottom:10px}
+.assess-intro p{font-size:14px;opacity:.85;line-height:1.7;margin-bottom:16px}
+.assess-meta{display:flex;gap:20px;flex-wrap:wrap}
+.a-meta{background:rgba(255,255,255,.15);border-radius:var(--r-sm);padding:10px 16px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.submit-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:linear-gradient(135deg,var(--aws),var(--aws2));color:#000;border:none;border-radius:var(--r-sm);font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;margin-top:20px}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,153,0,.4)}
+.result-box{margin-top:20px;padding:20px 24px;border-radius:var(--r);display:none;font-size:15px;font-weight:700;display:none;flex-direction:column;gap:8px}
+.result-pass{background:var(--green-l);border:2px solid #6ee7b7;color:var(--green)}
+.result-fail{background:var(--red-l);border:2px solid #fca5a5;color:var(--red)}
+.score-big{font-size:48px;font-weight:800;font-family:'IBM Plex Mono',monospace;margin-bottom:4px}
+
+@media(max-width:768px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-card{display:none}
+  .hdr-right .progress-wrap{display:none}
+  .mod-grid{grid-template-columns:1fr}
+  .cmd-grid{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">
-                <span class="logo-icon">☁️</span>
-                <span class="logo-text">Cloud<span class="highlight">Lab</span></span>
-            </a>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-                <span class="hamburger"></span>
-            </button>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html" class="nav-link active">Home</a></li>
-                <li class="dropdown">
-                    <a href="#" class="nav-link">Services ▼</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="services/ec2.html">EC2</a></li>
-                        <li><a href="services/s3.html">S3</a></li>
-                        <li><a href="services/iam.html">IAM</a></li>
-                        <li><a href="services/vpc.html">VPC</a></li>
-                        <li><a href="services/rds.html">RDS</a></li>
-                        <li><a href="services/cloudwatch.html">CloudWatch</a></li>
-                        <li><a href="services/loadbalancer.html">Load Balancer</a></li>
-                    </ul>
-                </li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <a class="logo" href="#">
+      <div class="logo-box">AWS</div>
+      <div>
+        <div class="logo-text">Junior Cloud Computing Associate</div>
+        <div class="logo-sub">Batch Start: 01 Dec, 2025</div>
+      </div>
+    </a>
+    <div class="hdr-right">
+      <div class="progress-wrap">
+        <span class="prog-label" id="progLabel">0 / 12 modules</span>
+        <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge"><div class="pulse"></div>LIVE BATCH — DEC 2025</div>
+      <h1>Master <em>AWS Cloud</em><br>Computing from Zero</h1>
+      <p class="hero-desc">A complete, hands-on course covering networking, Linux, AWS infrastructure, security, and automation — with step-by-step labs, checkpoints, and graded assessments.</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n">12</div><div class="stat-l">Modules</div></div>
+        <div class="stat"><div class="stat-n">40+</div><div class="stat-l">Lab Steps</div></div>
+        <div class="stat"><div class="stat-n">75+</div><div class="stat-l">Tasks</div></div>
+        <div class="stat"><div class="stat-n">50+</div><div class="stat-l">Linux Cmds</div></div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <h3>📋 Course Modules</h3>
+      <div class="module-pill"><div class="m-num">01</div><div class="m-name">Intro to Networks</div></div>
+      <div class="module-pill"><div class="m-num">02</div><div class="m-name">Switching & Routing</div></div>
+      <div class="module-pill"><div class="m-num">03</div><div class="m-name">Enterprise Security</div></div>
+      <div class="module-pill"><div class="m-num">04</div><div class="m-name">Red Hat Admin I</div></div>
+      <div class="module-pill"><div class="m-num">05</div><div class="m-name">Red Hat Admin II</div></div>
+      <div class="module-pill"><div class="m-num">06</div><div class="m-name">Intro to Cloud</div></div>
+      <div class="module-pill"><div class="m-num">07</div><div class="m-name">Virtual Private Cloud</div></div>
+      <div class="module-pill"><div class="m-num">08</div><div class="m-name">VPC Peering</div></div>
+      <div class="module-pill"><div class="m-num">09</div><div class="m-name">NAT Gateway</div></div>
+      <div class="module-pill"><div class="m-num">10</div><div class="m-name">Network ACL</div></div>
+      <div class="module-pill"><div class="m-num">11</div><div class="m-name">EC2 & EBS</div></div>
+      <div class="module-pill"><div class="m-num">12</div><div class="m-name">AWS IAM</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('modules',this)">📚 Modules</button>
+    <button class="tab-btn" onclick="switchTab('tasks',this)">🎯 Tasks</button>
+    <button class="tab-btn" onclick="switchTab('checkpoint',this)">✅ Checkpoints</button>
+    <button class="tab-btn" onclick="switchTab('linux',this)">🐧 Linux Commands</button>
+    <button class="tab-btn" onclick="switchTab('assessment',this)">🏆 Final Assessment</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- MODULES -->
+  <div id="tab-modules" class="tab-panel active">
+    <div class="sec-title">📚 All 12 Course Modules</div>
+    <div class="sec-sub">Click any module to open the full lesson — overview, objectives, and hands-on lab steps.</div>
+    <div class="divider-line"></div>
+    <div class="mod-grid" id="modulesGrid"></div>
+  </div>
+
+  <!-- TASKS -->
+  <div id="tab-tasks" class="tab-panel">
+    <div class="sec-title">🎯 Practice Tasks</div>
+    <div class="sec-sub">Complete tasks to reinforce your learning. Check them off as you finish.</div>
+    <div class="divider-line"></div>
+    <div class="task-filter-bar">
+      <button class="filter-btn f-all on" onclick="filterTasks('all',this)">All Tasks</button>
+      <button class="filter-btn f-easy" onclick="filterTasks('easy',this)">🟢 Easy</button>
+      <button class="filter-btn f-medium" onclick="filterTasks('medium',this)">🟡 Medium</button>
+      <button class="filter-btn f-hard" onclick="filterTasks('hard',this)">🔴 Hard</button>
+    </div>
+    <div class="tasks-grid" id="tasksGrid"></div>
+  </div>
+
+  <!-- CHECKPOINTS -->
+  <div id="tab-checkpoint" class="tab-panel">
+    <div class="sec-title">✅ Module Checkpoints</div>
+    <div class="sec-sub">Test your understanding after each major module. Click an option to see if you're correct.</div>
+    <div class="divider-line"></div>
+    <div id="checkpointContent"></div>
+  </div>
+
+  <!-- LINUX -->
+  <div id="tab-linux" class="tab-panel">
+    <div class="sec-title">🐧 Linux Commands Reference</div>
+    <div class="sec-sub">All essential Linux commands you need for AWS administration — with syntax and examples.</div>
+    <div class="divider-line"></div>
+    <div class="cmd-filter-bar" id="cmdFilterBar"></div>
+    <div class="cmd-grid" id="cmdGrid"></div>
+  </div>
+
+  <!-- ASSESSMENT -->
+  <div id="tab-assessment" class="tab-panel">
+    <div class="sec-title">🏆 Final Assessment</div>
+    <div class="sec-sub">15 questions covering all 12 modules. Score 70% or above to pass.</div>
+    <div class="divider-line"></div>
+    <div id="assessContent"></div>
+  </div>
+
+</div>
+
+<!-- MODULE MODAL -->
+<div class="overlay" id="overlay" onclick="closeOverlay(event)">
+  <div class="modal" id="modal">
+    <div class="modal-hdr">
+      <div class="modal-title-wrap">
+        <div class="modal-icon" id="modalIcon"></div>
+        <div>
+          <div class="modal-title" id="modalTitle"></div>
+          <div class="modal-sub" id="modalSub"></div>
         </div>
-    </nav>
+      </div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
 
-    <!-- Hero Section -->
-    <header class="hero">
-        <div class="hero-content">
-            <h1>Master AWS Through <span class="gradient-text">Hands-On Practice</span></h1>
-            <p class="hero-subtitle">No theory dumping. Just real labs, real commands, real results. Build production-ready skills with step-by-step practical training.</p>
-            <div class="hero-cta">
-                <a href="#services" class="btn btn-primary">Start Learning</a>
-                <a href="services/ec2.html" class="btn btn-secondary">View EC2 Lab</a>
-            </div>
+<script>
+// ═══════════════════════════════════════════════
+//  DATA — MODULES
+// ═══════════════════════════════════════════════
+const MODULES = [
+{
+  num:"01", emoji:"🌐", color:"#2563eb", bg:"#dbeafe",
+  title:"Introduction to Networks",
+  sub:"OSI Model · TCP/IP · IP Addressing · DNS · DHCP",
+  pills:{lab:3,task:5,quiz:5},
+  overview:"Networking is the foundation of everything in cloud computing. Before you can understand AWS VPCs, subnets, or routing — you must understand how networks work at a fundamental level. In this module, you'll learn the OSI model (the 7-layer framework used to describe network communication), the TCP/IP protocol stack, how IP addresses work (both IPv4 and IPv6), subnetting using CIDR notation, and key protocols like DNS, DHCP, HTTP, and HTTPS.",
+  objectives:[
+    "Understand all 7 layers of the OSI Model and what each layer does",
+    "Explain the difference between TCP and UDP and when to use each",
+    "Calculate subnets using CIDR notation (e.g. /24 = 256 IPs)",
+    "Understand how DNS resolves domain names to IP addresses",
+    "Understand how DHCP automatically assigns IP addresses",
+    "Use Linux tools like ping, dig, traceroute, and nmap"
+  ],
+  steps:[
+    {
+      n:1, title:"Install Networking Tools",
+      why:"Before we begin, we need to install all the essential networking tools on your Linux system.",
+      note:"Run these commands on Ubuntu / Debian-based systems. For Amazon Linux, replace 'apt' with 'yum'.",
+      body:`First, update your package lists and install the tools we'll use throughout this module.`,
+      code:`# Update package lists
+sudo apt update && sudo apt upgrade -y
+
+# Install essential networking tools
+sudo apt install -y \\
+    net-tools \\
+    nmap \\
+    traceroute \\
+    dnsutils \\
+    curl \\
+    wget \\
+    iproute2 \\
+    tcpdump \\
+    netcat-openbsd
+
+# Verify installation
+ping --version
+nmap --version
+dig -v 2>&1 | head -1`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"Explore Your Network Interfaces",
+      why:"Understanding your current network configuration is the first step in network administration.",
+      body:`Network interfaces are how your computer connects to networks. You may have multiple — like eth0 (wired), wlan0 (wireless), and lo (loopback). Let's examine them.`,
+      code:`# Modern way — show all interfaces with IP addresses
+ip addr show
+
+# Show only active interfaces
+ip addr show up
+
+# Show a specific interface
+ip addr show eth0
+
+# Show routing table (how traffic flows)
+ip route show
+
+# Show ARP table (MAC to IP mappings)
+ip neigh show
+
+# Show network statistics
+ss -tuln
+
+# Old method — still widely used
+ifconfig -a
+netstat -rn`,
+      lang:"bash",
+      note:"The 'lo' interface (127.0.0.1) is your loopback — it always points back to your own machine. This is what 'localhost' resolves to."
+    },
+    {
+      n:3, title:"Test Connectivity with Ping",
+      why:"Ping uses ICMP protocol to test if a host is reachable and measure round-trip time.",
+      body:`Ping is your first diagnostic tool. If ping fails, either the host is down, or there's a firewall blocking ICMP. Always start troubleshooting with ping.`,
+      code:`# Basic ping — send 4 packets
+ping -c 4 google.com
+
+# Ping with specific packet size
+ping -c 4 -s 1400 google.com
+
+# Fast ping (0.2 second interval)
+ping -c 10 -i 0.2 8.8.8.8
+
+# Ping and log results
+ping -c 100 google.com | tee ping-results.txt
+
+# Ping multiple hosts in sequence
+for host in google.com amazon.com cloudflare.com; do
+    echo "=== Testing $host ==="
+    ping -c 2 $host | tail -1
+done`,
+      lang:"bash"
+    }
+  ]
+},
+{
+  num:"02", emoji:"🔀", color:"#7c3aed", bg:"#ede9fe",
+  title:"Switching, Routing & Wireless",
+  sub:"VLANs · STP · OSPF · BGP · Wi-Fi Standards",
+  pills:{lab:3,task:5,quiz:5},
+  overview:"Switching operates at Layer 2 (Data Link) and routes traffic within the same network using MAC addresses. Routing operates at Layer 3 (Network) and moves traffic between different networks using IP addresses. Wireless networking adds radio frequency communication into the mix. In AWS, understanding these concepts helps you design VPCs, subnets, and routing tables correctly.",
+  objectives:[
+    "Understand the difference between a switch (L2) and a router (L3)",
+    "Understand VLANs and how they segment networks logically",
+    "Understand Spanning Tree Protocol (STP) and why it prevents loops",
+    "Understand dynamic routing protocols: OSPF (interior) and BGP (exterior)",
+    "Know Wi-Fi standards: 802.11a/b/g/n/ac/ax and their speeds",
+    "Use Linux network namespaces to simulate VLANs and routing"
+  ],
+  steps:[
+    {
+      n:1, title:"Simulate VLANs with Network Namespaces",
+      why:"Linux network namespaces let you create isolated network environments — perfect for simulating VLANs.",
+      body:`A VLAN (Virtual LAN) is a logical subdivision of a network. Even if two devices are on the same physical switch, different VLANs prevent them from communicating. We can simulate this with Linux namespaces.`,
+      code:`# Create two network namespaces (simulating two VLANs)
+sudo ip netns add vlan10
+sudo ip netns add vlan20
+
+# Verify namespaces were created
+ip netns list
+
+# Create a virtual ethernet pair (like a cable connecting two devices)
+sudo ip link add veth0 type veth peer name veth1
+
+# Move each end of the cable to its namespace
+sudo ip link set veth0 netns vlan10
+sudo ip link set veth1 netns vlan20
+
+# Assign IP addresses inside each namespace
+sudo ip netns exec vlan10 ip addr add 192.168.10.1/24 dev veth0
+sudo ip netns exec vlan20 ip addr add 192.168.20.1/24 dev veth1
+
+# Bring interfaces up
+sudo ip netns exec vlan10 ip link set veth0 up
+sudo ip netns exec vlan20 ip link set veth1 up
+sudo ip netns exec vlan10 ip link set lo up
+sudo ip netns exec vlan20 ip link set lo up
+
+# Test — can they ping each other? (They shouldn't, different subnets)
+sudo ip netns exec vlan10 ping -c 2 192.168.20.1`,
+      lang:"bash",
+      note:"Without routing configured between the namespaces, the ping will fail — exactly how VLANs isolate traffic in real networks."
+    },
+    {
+      n:2, title:"Configure Static Routes",
+      why:"Static routing means you manually tell the system where to send traffic. This is the foundation before understanding dynamic routing.",
+      body:`Routes tell your system: 'To reach network X, send traffic to gateway Y.' In AWS, you configure route tables the same way.`,
+      code:`# View current routing table
+ip route show
+
+# Add a static route
+# Syntax: ip route add <destination_network> via <gateway_ip> dev <interface>
+sudo ip route add 10.0.0.0/8 via 192.168.1.1 dev eth0
+
+# Add a default route (gateway of last resort)
+sudo ip route add default via 192.168.1.1
+
+# Add route with metric (lower = preferred)
+sudo ip route add 192.168.50.0/24 via 192.168.1.1 metric 100
+
+# Delete a route
+sudo ip route del 10.0.0.0/8
+
+# Flush the route cache
+sudo ip route flush cache
+
+# Check which route will be used for a destination
+ip route get 8.8.8.8`,
+      lang:"bash"
+    },
+    {
+      n:3, title:"Traceroute — See the Path of Traffic",
+      why:"Traceroute shows you every router (hop) that your traffic passes through on the way to a destination.",
+      body:`Each hop in a traceroute is a router. The asterisks (*) mean that router didn't respond to ICMP. This helps you diagnose where traffic is being dropped or delayed.`,
+      code:`# Basic traceroute
+traceroute google.com
+
+# Use TCP instead of ICMP (better at bypassing firewalls)
+sudo traceroute -T -p 80 google.com
+
+# Traceroute with AS numbers (see which ISPs traffic crosses)
+traceroute -A google.com
+
+# Faster alternative: tracepath
+tracepath google.com
+
+# MTR — combines ping and traceroute (real-time)
+sudo apt install mtr -y
+mtr --report google.com`,
+      lang:"bash"
+    }
+  ]
+},
+{
+  num:"03", emoji:"🔒", color:"#0891b2", bg:"#cffafe",
+  title:"Enterprise Networking, Security & Automation",
+  sub:"Firewalls · VPN · IDS/IPS · Python Automation",
+  pills:{lab:3,task:6,quiz:5},
+  overview:"Enterprise networks require multiple layers of security. This module covers stateful firewalls (which track connection state), VPNs (encrypted tunnels), IDS/IPS systems (intrusion detection and prevention), Network ACLs, and how to automate network tasks using Python. These skills directly translate to AWS security groups, NACLs, AWS WAF, and AWS VPN services.",
+  objectives:[
+    "Configure UFW firewall rules on Linux to allow/deny specific traffic",
+    "Understand stateful vs stateless firewalls and their differences",
+    "Set up a WireGuard VPN for secure encrypted communication",
+    "Understand how IDS (detects) vs IPS (blocks) network threats",
+    "Write Python scripts to automate network tasks using subprocess and socket",
+    "Use iptables for advanced packet filtering rules"
+  ],
+  steps:[
+    {
+      n:1, title:"Configure UFW Firewall",
+      why:"UFW (Uncomplicated Firewall) is a simplified interface to iptables. It's used on Ubuntu and is similar to AWS Security Groups.",
+      warn:"ALWAYS allow SSH before enabling UFW — otherwise you will lock yourself out!",
+      body:`UFW rules are evaluated top-to-bottom. The first matching rule wins. By default, UFW blocks all incoming traffic and allows all outgoing traffic.`,
+      code:`# Install UFW
+sudo apt install ufw -y
+
+# Check current status
+sudo ufw status verbose
+
+# STEP 1 — Allow SSH FIRST before enabling!
+sudo ufw allow 22/tcp
+# Or more specifically:
+sudo ufw allow from 192.168.1.0/24 to any port 22
+
+# Enable UFW
+sudo ufw enable
+
+# Allow common services
+sudo ufw allow 80/tcp      # HTTP
+sudo ufw allow 443/tcp     # HTTPS
+sudo ufw allow 3306/tcp    # MySQL
+sudo ufw allow 5432/tcp    # PostgreSQL
+
+# Allow a port range
+sudo ufw allow 8000:9000/tcp
+
+# Deny a specific IP
+sudo ufw deny from 192.168.1.100
+
+# Delete a rule
+sudo ufw delete allow 80/tcp
+
+# Reset all rules (start fresh)
+sudo ufw reset
+
+# View rules with numbers
+sudo ufw status numbered`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"Advanced iptables Rules",
+      why:"iptables is the underlying firewall engine in Linux. UFW is a frontend for it. Understanding iptables helps you understand how AWS NACLs and Security Groups work under the hood.",
+      body:`iptables has tables (filter, nat, mangle) and chains (INPUT, OUTPUT, FORWARD, PREROUTING, POSTROUTING). The filter table with INPUT chain is what controls incoming traffic to your server.`,
+      code:`# View all rules (with line numbers)
+sudo iptables -L -n -v --line-numbers
+
+# View NAT table rules
+sudo iptables -t nat -L -n -v
+
+# Allow established connections (stateful rule — very important!)
+sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow loopback interface
+sudo iptables -A INPUT -i lo -j ACCEPT
+
+# Allow SSH from specific subnet only
+sudo iptables -A INPUT -s 10.0.1.0/24 -p tcp --dport 22 -j ACCEPT
+
+# Allow HTTP and HTTPS
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+# Block all other incoming (set default policy)
+sudo iptables -P INPUT DROP
+sudo iptables -P FORWARD DROP
+
+# Port forwarding (NAT)
+sudo iptables -t nat -A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-port 80
+
+# Save rules (persist across reboots)
+sudo apt install iptables-persistent -y
+sudo netfilter-persistent save`,
+      lang:"bash"
+    },
+    {
+      n:3, title:"Python Network Automation Script",
+      why:"Manual network tasks become error-prone at scale. Python automation ensures consistency and saves time — a core DevOps skill.",
+      body:`This Python script checks the health of multiple servers, scans for open ports, and generates a report. This is the foundation of network monitoring automation.`,
+      code:`#!/usr/bin/env python3
+"""
+Network Health Checker
+Checks connectivity and open ports for a list of hosts
+"""
+import subprocess
+import socket
+import datetime
+import json
+
+# List of hosts to monitor
+HOSTS = [
+    {"name": "Google DNS",    "ip": "8.8.8.8",       "ports": [53, 443]},
+    {"name": "Cloudflare",    "ip": "1.1.1.1",        "ports": [53, 80]},
+    {"name": "Local Gateway", "ip": "192.168.1.1",    "ports": [80, 443]},
+]
+
+def ping_host(ip, count=3):
+    """Returns True if host responds to ping"""
+    try:
+        result = subprocess.run(
+            ["ping", "-c", str(count), "-W", "1", ip],
+            capture_output=True, timeout=10
+        )
+        return result.returncode == 0
+    except Exception:
+        return False
+
+def check_port(ip, port, timeout=2):
+    """Returns True if TCP port is open"""
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(timeout)
+        result = sock.connect_ex((ip, port))
+        sock.close()
+        return result == 0
+    except Exception:
+        return False
+
+def run_check():
+    report = []
+    print(f"\\n{'='*55}")
+    print(f"  Network Health Report — {datetime.datetime.now():%Y-%m-%d %H:%M}")
+    print(f"{'='*55}")
+
+    for host in HOSTS:
+        status = "✅ UP" if ping_host(host["ip"]) else "❌ DOWN"
+        port_results = {}
+        for p in host["ports"]:
+            port_results[p] = "OPEN" if check_port(host["ip"], p) else "CLOSED"
+
+        print(f"\\n🖥  {host['name']} ({host['ip']})")
+        print(f"   Ping: {status}")
+        for p, s in port_results.items():
+            icon = "🟢" if s == "OPEN" else "🔴"
+            print(f"   Port {p:5}: {icon} {s}")
+
+        report.append({"host": host, "ping": status, "ports": port_results})
+
+    # Save report to JSON
+    with open("network_report.json", "w") as f:
+        json.dump(report, f, indent=2)
+    print(f"\\n📄 Report saved to network_report.json")
+
+if __name__ == "__main__":
+    run_check()`,
+      lang:"python"
+    }
+  ]
+},
+{
+  num:"04", emoji:"🐧", color:"#dc2626", bg:"#fee2e2",
+  title:"Red Hat System Administration I",
+  sub:"Users · Permissions · Processes · Storage · Systemd",
+  pills:{lab:4,task:6,quiz:5},
+  overview:"Red Hat Enterprise Linux (RHEL) is the most widely used Linux distribution in enterprise environments and is the base for Amazon Linux 2. This module covers the core skills every sysadmin needs: user and group management, file permissions using chmod/chown, process management, disk management, and service control with systemd. These are daily tasks for anyone managing cloud infrastructure.",
+  objectives:[
+    "Create and manage Linux users and groups with useradd, usermod, groupadd",
+    "Set file permissions using both symbolic (u+x) and octal (755) notation",
+    "Understand SUID, SGID, and sticky bit special permissions",
+    "Manage running processes with ps, top, kill, and nice",
+    "Control system services using systemctl and understand service units",
+    "Manage disk partitions and filesystems with fdisk, mkfs, and mount"
+  ],
+  steps:[
+    {
+      n:1, title:"User and Group Management",
+      why:"Every file, process, and resource in Linux is owned by a user and group. Proper user management is critical for security.",
+      body:`Linux uses the principle of least privilege — each user should only have access to what they need. Users are stored in /etc/passwd, passwords (hashed) in /etc/shadow, and groups in /etc/group.`,
+      code:`# Create a new user with home directory and bash shell
+sudo useradd -m -s /bin/bash -c "AWS Student" awsstudent
+
+# Set the user's password
+sudo passwd awsstudent
+
+# Create a new group
+sudo groupadd cloudteam
+sudo groupadd developers
+
+# Add user to a group (supplementary group)
+sudo usermod -aG cloudteam awsstudent
+sudo usermod -aG developers awsstudent
+sudo usermod -aG sudo awsstudent    # Give sudo access
+
+# Check user info
+id awsstudent          # UID, GID, all groups
+groups awsstudent      # All groups user belongs to
+
+# View user account details
+cat /etc/passwd | grep awsstudent
+
+# Lock and unlock an account
+sudo usermod -L awsstudent    # Lock (disable login)
+sudo usermod -U awsstudent    # Unlock
+
+# Set account expiry
+sudo usermod -e 2025-12-31 awsstudent
+
+# Delete a user (and their home dir)
+sudo userdel -r awsstudent`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"File Permissions — chmod and chown",
+      why:"Incorrect file permissions are one of the most common security vulnerabilities. SSH keys MUST be 400, config files 644, and scripts 755.",
+      body:`Every file has three permission sets: Owner (u), Group (g), Others (o). Each set has read (r=4), write (w=2), execute (x=1). So 755 = rwxr-xr-x means owner can do everything, group/others can only read and execute.`,
+      note:"SSH private keys (.pem files) MUST be chmod 400 — AWS will refuse to connect if permissions are too open!",
+      code:`# View current permissions
+ls -la /home/awsstudent/
+
+# Permission format: -rwxr-xr-x
+# Position: 1=type, 2-4=user, 5-7=group, 8-10=others
+
+# ── OCTAL NOTATION ──
+chmod 755 script.sh       # rwxr-xr-x (executable script)
+chmod 644 config.txt      # rw-r--r--  (config file)
+chmod 600 private.pem     # rw-------  (private key, ONLY owner)
+chmod 400 aws-key.pem     # r--------  (read-only key — for SSH)
+chmod 777 public.txt      # rwxrwxrwx  (everyone can do anything — AVOID!)
+chmod 000 secret.txt      # ---------  (nobody can access)
+
+# ── SYMBOLIC NOTATION ──
+chmod u+x script.sh       # Add execute for user
+chmod g-w shared.txt      # Remove write from group
+chmod o-r private.conf    # Remove read from others
+chmod a+r public.html     # Add read for ALL (user,group,others)
+chmod u=rwx,g=rx,o= file  # Set exact permissions
+
+# ── RECURSIVE ──
+chmod -R 755 /var/www/html/    # Apply to all files in directory
+
+# ── CHANGE OWNERSHIP ──
+chown awsstudent file.txt                  # Change owner
+chown awsstudent:cloudteam file.txt        # Change owner and group
+chown -R www-data:www-data /var/www/       # Recursive ownership change
+
+# ── SPECIAL PERMISSIONS ──
+chmod u+s /usr/bin/passwd    # SUID — runs as file owner
+chmod g+s /shared/           # SGID — new files inherit group
+chmod +t /tmp/               # Sticky bit — only owner can delete`,
+      lang:"bash"
+    },
+    {
+      n:3, title:"Process Management",
+      why:"Understanding and controlling processes is essential for system administration and performance tuning.",
+      body:`Every running program is a process with a unique PID (Process ID). Processes have priority values (nice) ranging from -20 (highest priority) to +19 (lowest). Only root can set negative nice values.`,
+      code:`# List ALL processes (most detailed)
+ps aux
+
+# Tree view (parent-child relationships)
+ps auxf
+
+# Find processes by name
+ps aux | grep nginx
+pgrep nginx
+
+# Real-time process monitor
+top                    # Press 'q' to quit, 'k' to kill
+htop                   # Better UI (install: sudo apt install htop -y)
+
+# Check what a process is doing
+ls -la /proc/<PID>/    # All process info in filesystem
+
+# ── SIGNALS ──
+# SIGTERM (15) — graceful shutdown (ask process to stop)
+kill 12345                    # Sends SIGTERM by default
+kill -15 12345                # Explicit SIGTERM
+
+# SIGKILL (9) — force kill (cannot be ignored)
+kill -9 12345
+sudo kill -9 12345
+
+# Kill by name
+pkill nginx               # Kill all 'nginx' processes
+killall apache2
+
+# ── BACKGROUND / FOREGROUND ──
+./long_script.sh &        # Run in background
+jobs                      # List background jobs
+fg %1                     # Bring job 1 to foreground
+bg %2                     # Send job 2 to background
+nohup ./script.sh &       # Keep running even after logout
+
+# ── PRIORITY ──
+nice -n 10 ./backup.sh    # Run with lower priority
+renice -n -5 12345        # Change priority of running process`,
+      lang:"bash"
+    },
+    {
+      n:4, title:"Systemd Service Management",
+      why:"Systemd manages all services, targets, and daemons in modern Linux. You use it every day managing AWS EC2 instances.",
+      body:`A systemd 'unit' is a configuration file that describes a service, mount point, device, or socket. Service units end in .service. Systemd tracks dependencies between services and can restart them automatically on failure.`,
+      code:`# ── BASIC SERVICE COMMANDS ──
+sudo systemctl start   nginx        # Start service now
+sudo systemctl stop    nginx        # Stop service now
+sudo systemctl restart nginx        # Stop then start
+sudo systemctl reload  nginx        # Reload config (no restart)
+sudo systemctl status  nginx        # Check status + last 10 log lines
+
+# ── ENABLE / DISABLE (boot behavior) ──
+sudo systemctl enable  nginx        # Start on boot
+sudo systemctl disable nginx        # Don't start on boot
+sudo systemctl enable --now nginx   # Enable AND start immediately
+
+# ── VIEW LOGS ──
+journalctl -u nginx                 # All logs for nginx
+journalctl -u nginx -n 50           # Last 50 lines
+journalctl -u nginx -f              # Follow (like tail -f)
+journalctl -u nginx --since "1 hour ago"
+journalctl -b                       # Logs since last boot
+
+# ── CREATE A CUSTOM SERVICE ──
+# Create file: /etc/systemd/system/myapp.service
+sudo nano /etc/systemd/system/myapp.service`,
+      lang:"bash",
+      tip:`A simple service unit looks like this:
+
+[Unit]
+Description=My Custom Application
+After=network.target
+
+[Service]
+Type=simple
+User=awsstudent
+WorkingDirectory=/home/awsstudent/app
+ExecStart=/usr/bin/python3 /home/awsstudent/app/server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target`
+    }
+  ]
+},
+{
+  num:"05", emoji:"⚙️", color:"#059669", bg:"#d1fae5",
+  title:"Red Hat System Administration II",
+  sub:"LVM · NFS · SELinux · Cron · Advanced Networking",
+  pills:{lab:3,task:5,quiz:5},
+  overview:"This module goes deeper into enterprise Linux administration. Logical Volume Management (LVM) lets you resize storage on the fly without downtime. NFS allows you to share storage across multiple servers. SELinux provides mandatory access control beyond standard Unix permissions. Cron automates tasks on a schedule. These skills are essential for managing production EC2 instances.",
+  objectives:[
+    "Create and manage LVM physical volumes, volume groups, and logical volumes",
+    "Extend and shrink LVM volumes without downtime",
+    "Set up an NFS server and mount shared directories on clients",
+    "Understand SELinux modes: enforcing, permissive, and disabled",
+    "Manage SELinux file contexts and boolean settings",
+    "Schedule automated tasks using cron and at"
+  ],
+  steps:[
+    {
+      n:1, title:"Logical Volume Management (LVM)",
+      why:"LVM lets you create flexible storage that you can resize, snapshot, and move — critical for managing production storage.",
+      warn:"Practice LVM on a test VM first. Wrong commands can permanently destroy data on production systems!",
+      body:`LVM has three layers: Physical Volume (PV) — the actual disk or partition. Volume Group (VG) — a pool of storage made from PVs. Logical Volume (LV) — a virtual partition carved from the VG that you format and use.`,
+      code:`# Install LVM tools
+sudo apt install lvm2 -y
+
+# ── STEP 1: See available disks ──
+lsblk                          # Tree view of all block devices
+sudo fdisk -l                  # Detailed partition info
+
+# ── STEP 2: Create Physical Volume ──
+sudo pvcreate /dev/sdb
+sudo pvcreate /dev/sdc         # Can span multiple disks
+
+# View physical volumes
+sudo pvdisplay
+sudo pvs                       # Summary view
+
+# ── STEP 3: Create Volume Group ──
+sudo vgcreate datavg /dev/sdb /dev/sdc
+sudo vgdisplay
+sudo vgs                       # Summary view
+
+# ── STEP 4: Create Logical Volume ──
+sudo lvcreate -L 20G -n datalv datavg      # Fixed size (20GB)
+sudo lvcreate -l 100%FREE -n datalv datavg  # Use all free space
+sudo lvdisplay
+sudo lvs                       # Summary view
+
+# ── STEP 5: Format and Mount ──
+sudo mkfs.ext4 /dev/datavg/datalv
+sudo mkdir -p /mnt/data
+sudo mount /dev/datavg/datalv /mnt/data
+df -h                          # Verify mount
+
+# ── STEP 6: Persist mount in fstab ──
+echo "/dev/datavg/datalv  /mnt/data  ext4  defaults  0 2" | sudo tee -a /etc/fstab
+
+# ── EXTEND an LV (no downtime!) ──
+sudo lvextend -L +10G /dev/datavg/datalv           # Add 10GB
+sudo resize2fs /dev/datavg/datalv                  # Extend filesystem
+
+# ── SNAPSHOT (for backups) ──
+sudo lvcreate -L 5G -s -n snapshot1 /dev/datavg/datalv`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"NFS Server and Client Setup",
+      why:"NFS (Network File System) lets multiple servers share storage — like EFS (Elastic File System) in AWS, but on your own infrastructure.",
+      body:`NFS has two parts: the server that exports (shares) directories, and the client that mounts (uses) them. Everything happens over the network, making it look like a local folder to applications.`,
+      code:`# ════════════════════════════════
+# SERVER SETUP (Run on Server VM)
+# ════════════════════════════════
+
+# Install NFS server
+sudo apt install nfs-kernel-server -y
+
+# Create the shared directory
+sudo mkdir -p /srv/nfs/shared
+sudo chown nobody:nogroup /srv/nfs/shared
+sudo chmod 777 /srv/nfs/shared
+
+# Configure exports — edit /etc/exports
+sudo nano /etc/exports
+# Add the following line:
+# /srv/nfs/shared  192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
+#
+# Options explained:
+# rw               = read and write access
+# sync             = write to disk before replying (safer)
+# no_subtree_check = improve reliability
+# no_root_squash   = allow root access from clients
+
+# Apply exports and restart
+sudo exportfs -ra
+sudo systemctl restart nfs-kernel-server
+sudo systemctl enable nfs-kernel-server
+
+# Check what is exported
+showmount -e localhost
+
+# ════════════════════════════════
+# CLIENT SETUP (Run on Client VM)
+# ════════════════════════════════
+
+sudo apt install nfs-common -y
+sudo mkdir -p /mnt/nfs_share
+
+# Mount the NFS share
+sudo mount 192.168.1.100:/srv/nfs/shared /mnt/nfs_share
+
+# Verify it works
+df -h | grep nfs
+ls /mnt/nfs_share/
+
+# Create a test file (from client)
+echo "Hello from client" | sudo tee /mnt/nfs_share/test.txt
+
+# Check the file on server
+ls /srv/nfs/shared/
+
+# Auto-mount on boot — add to /etc/fstab on client
+echo "192.168.1.100:/srv/nfs/shared /mnt/nfs_share nfs defaults 0 0" | sudo tee -a /etc/fstab`,
+      lang:"bash"
+    },
+    {
+      n:3, title:"Scheduled Tasks with Cron",
+      why:"Automation is everything in cloud operations — backups, log rotation, health checks, and reports all run on schedules.",
+      body:`Cron uses a table (crontab) where each line specifies a schedule and a command. The schedule has 5 fields: Minute (0-59), Hour (0-23), Day of Month (1-31), Month (1-12), Day of Week (0-7).`,
+      note:"Use https://crontab.guru to visually design cron schedules before adding them.",
+      code:`# Edit your crontab (opens in default editor)
+crontab -e
+
+# List your crontab
+crontab -l
+
+# Remove all crontab entries
+crontab -r
+
+# ── CRON SCHEDULE FORMAT ──
+# ┌───── minute    (0-59)
+# │ ┌───── hour     (0-23)
+# │ │ ┌───── day     (1-31)
+# │ │ │ ┌───── month   (1-12)
+# │ │ │ │ ┌───── weekday (0-7, 0 and 7 = Sunday)
+# │ │ │ │ │
+# * * * * * command_to_run
+
+# ── EXAMPLES ──
+
+# Every minute
+* * * * * /home/ubuntu/health_check.sh
+
+# Every day at 2:30 AM
+30 2 * * * /usr/local/bin/backup.sh
+
+# Every Sunday at midnight
+0 0 * * 0 /scripts/weekly_cleanup.sh
+
+# First day of every month at 9 AM
+0 9 1 * * /scripts/monthly_report.sh
+
+# Every 15 minutes
+*/15 * * * * /scripts/monitor.sh
+
+# Weekdays (Mon-Fri) at 8 AM
+0 8 * * 1-5 /scripts/workday_startup.sh
+
+# Redirect output to log file
+0 2 * * * /backup.sh >> /var/log/backup.log 2>&1
+
+# ── SYSTEM-WIDE CRON (needs root) ──
+ls /etc/cron.d/
+ls /etc/cron.daily/
+ls /etc/cron.weekly/
+ls /etc/cron.monthly/`,
+      lang:"bash"
+    }
+  ]
+},
+{
+  num:"06", emoji:"☁️", color:"#f59e0b", bg:"#fef3c7",
+  title:"Introduction to Cloud Computing",
+  sub:"Cloud Models · AWS Global Infrastructure · CLI Setup",
+  pills:{lab:2,task:5,quiz:5},
+  overview:"Cloud computing means using remote servers (owned by AWS, Azure, GCP, etc.) to store, manage, and process data instead of local servers. AWS is the market leader with 200+ services across 30+ global regions. This module covers the fundamental concepts: deployment models (public/private/hybrid cloud), service models (IaaS/PaaS/SaaS), AWS global infrastructure (Regions, AZs, Edge Locations), and sets up your AWS CLI.",
+  objectives:[
+    "Explain the difference between Public, Private, and Hybrid cloud",
+    "Understand IaaS (EC2), PaaS (Elastic Beanstalk), and SaaS (WorkMail)",
+    "Understand AWS Regions, Availability Zones, and Edge Locations",
+    "Explain the AWS Shared Responsibility Model clearly",
+    "Install and configure AWS CLI v2 with IAM credentials",
+    "Explore AWS services using CLI commands"
+  ],
+  steps:[
+    {
+      n:1, title:"Install AWS CLI v2",
+      why:"The AWS CLI is your primary tool for interacting with AWS from the terminal — faster than the console for automation.",
+      body:`AWS CLI v2 is the latest version with improved performance and new features. After installing, you must configure it with your IAM user's access key and secret key to authenticate with AWS.`,
+      note:"Get your Access Key ID and Secret Access Key from: AWS Console → IAM → Users → Your User → Security Credentials → Create access key",
+      code:`# ── INSTALL AWS CLI v2 on Linux ──
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# Verify installation
+aws --version
+# Expected: aws-cli/2.x.x Python/3.x.x Linux/...
+
+# ── CONFIGURE AWS CLI ──
+aws configure
+# This will prompt for:
+# AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+# AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+# Default region name [None]: ap-south-1
+# Default output format [None]: json
+
+# ── VERIFY CONNECTION ──
+aws sts get-caller-identity
+# Shows: Account, UserId, ARN — confirms you're connected
+
+# ── SET UP MULTIPLE PROFILES ──
+aws configure --profile production
+aws configure --profile development
+
+# Use a specific profile
+aws s3 ls --profile production
+export AWS_PROFILE=production   # Set as default for session`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"Explore AWS with CLI Commands",
+      why:"Knowing CLI commands lets you automate everything and work much faster than clicking through the console.",
+      body:`The AWS CLI follows a consistent pattern: aws <service> <operation> [--options]. Tab completion works if you set it up. Always specify --region or configure a default.`,
+      code:`# ── ACCOUNT INFORMATION ──
+aws sts get-caller-identity
+aws iam get-user
+
+# ── EC2 INFORMATION ──
+# List all instances in table format
+aws ec2 describe-instances \\
+  --query 'Reservations[*].Instances[*].[InstanceId,State.Name,InstanceType,PublicIpAddress,Tags[?Key==Name].Value|[0]]' \\
+  --output table
+
+# List available AWS regions
+aws ec2 describe-regions --output table
+
+# List availability zones in your region
+aws ec2 describe-availability-zones --output table
+
+# ── S3 ──
+aws s3 ls                                         # List all buckets
+aws s3 ls s3://my-bucket --human-readable         # List bucket contents
+aws s3 cp myfile.txt s3://my-bucket/              # Upload file
+aws s3 sync ./local-folder s3://my-bucket/backup/ # Sync directory
+
+# ── VPC ──
+aws ec2 describe-vpcs --output table
+aws ec2 describe-subnets --output table
+aws ec2 describe-security-groups --output table
+
+# ── IAM ──
+aws iam list-users --output table
+aws iam list-roles --output table
+
+# ── COST EXPLORER (requires billing access) ──
+aws ce get-cost-and-usage \\
+  --time-period Start=2024-01-01,End=2024-01-31 \\
+  --granularity MONTHLY \\
+  --metrics BlendedCost`,
+      lang:"bash"
+    }
+  ]
+},
+{
+  num:"07", emoji:"🏗️", color:"#2563eb", bg:"#dbeafe",
+  title:"Virtual Private Cloud (VPC)",
+  sub:"Subnets · Internet Gateway · Route Tables · Security Groups",
+  pills:{lab:5,task:7,quiz:5},
+  overview:"A VPC is your own private, isolated network inside AWS. Think of it as your own data center in the cloud — you control the IP ranges, subnets, route tables, and what can communicate with what. Every AWS account gets a default VPC, but you should always create custom VPCs for production workloads. Understanding VPCs is the most important AWS networking skill.",
+  objectives:[
+    "Create a custom VPC with a /16 CIDR block (65,536 IP addresses)",
+    "Create public subnets (internet-accessible) and private subnets (internal only)",
+    "Attach an Internet Gateway and configure route tables",
+    "Understand the difference between Security Groups and NACLs",
+    "Create Security Groups with specific inbound/outbound rules",
+    "Launch EC2 instances in your custom VPC and verify connectivity"
+  ],
+  steps:[
+    {
+      n:1, title:"Create the VPC",
+      why:"The VPC is the foundation — everything else (subnets, gateways, instances) lives inside it.",
+      body:`A VPC CIDR block defines the entire IP address space for your VPC. Best practice: use /16 for VPCs (65,536 IPs) so you have plenty of room for subnets. Use the 10.0.0.0/8, 172.16.0.0/12, or 192.168.0.0/16 private IP ranges.`,
+      code:`# Create VPC with CIDR 10.0.0.0/16
+VPC_ID=$(aws ec2 create-vpc \\
+  --cidr-block 10.0.0.0/16 \\
+  --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=MyProductionVPC}]' \\
+  --query 'Vpc.VpcId' \\
+  --output text)
+
+echo "Created VPC: $VPC_ID"
+
+# Enable DNS hostnames (important for EC2 to get DNS names)
+aws ec2 modify-vpc-attribute \\
+  --vpc-id $VPC_ID \\
+  --enable-dns-hostnames
+
+# Enable DNS resolution
+aws ec2 modify-vpc-attribute \\
+  --vpc-id $VPC_ID \\
+  --enable-dns-support
+
+# Verify VPC was created
+aws ec2 describe-vpcs \\
+  --vpc-ids $VPC_ID \\
+  --output table`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"Create Public and Private Subnets",
+      why:"Subnets divide your VPC into smaller network segments. Public subnets have internet access; private subnets don't.",
+      note:"AWS reserves 5 IP addresses in each subnet (first 4 and last 1). So a /24 subnet gives you 256 - 5 = 251 usable IPs.",
+      body:`Best practice: Create subnets across multiple Availability Zones for high availability. Use separate subnets for web servers (public), application servers (private), and databases (private).`,
+      code:`# Create PUBLIC subnet in AZ-a (for web servers, load balancers)
+PUB_SUBNET_A=$(aws ec2 create-subnet \\
+  --vpc-id $VPC_ID \\
+  --cidr-block 10.0.1.0/24 \\
+  --availability-zone ap-south-1a \\
+  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=Public-Subnet-1a}]' \\
+  --query 'Subnet.SubnetId' --output text)
+
+# Create PUBLIC subnet in AZ-b (for redundancy)
+PUB_SUBNET_B=$(aws ec2 create-subnet \\
+  --vpc-id $VPC_ID \\
+  --cidr-block 10.0.2.0/24 \\
+  --availability-zone ap-south-1b \\
+  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=Public-Subnet-1b}]' \\
+  --query 'Subnet.SubnetId' --output text)
+
+# Create PRIVATE subnet in AZ-a (for app servers)
+PRIV_SUBNET_A=$(aws ec2 create-subnet \\
+  --vpc-id $VPC_ID \\
+  --cidr-block 10.0.10.0/24 \\
+  --availability-zone ap-south-1a \\
+  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=Private-Subnet-1a}]' \\
+  --query 'Subnet.SubnetId' --output text)
+
+# Create PRIVATE subnet in AZ-b (for databases)
+PRIV_SUBNET_B=$(aws ec2 create-subnet \\
+  --vpc-id $VPC_ID \\
+  --cidr-block 10.0.11.0/24 \\
+  --availability-zone ap-south-1b \\
+  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=Private-Subnet-1b}]' \\
+  --query 'Subnet.SubnetId' --output text)
+
+# Enable auto-assign public IPs for public subnets
+aws ec2 modify-subnet-attribute --subnet-id $PUB_SUBNET_A --map-public-ip-on-launch
+aws ec2 modify-subnet-attribute --subnet-id $PUB_SUBNET_B --map-public-ip-on-launch
+
+echo "Public Subnet A:  $PUB_SUBNET_A"
+echo "Public Subnet B:  $PUB_SUBNET_B"
+echo "Private Subnet A: $PRIV_SUBNET_A"
+echo "Private Subnet B: $PRIV_SUBNET_B"`,
+      lang:"bash"
+    },
+    {
+      n:3, title:"Internet Gateway and Route Tables",
+      why:"An Internet Gateway (IGW) is the door between your VPC and the internet. Without it, nothing in your VPC can reach the internet.",
+      body:`Attaching an IGW to your VPC is not enough — you also need to add a route in the route table that sends internet-bound traffic (0.0.0.0/0) to the IGW. Only subnets with this route become 'public'.`,
+      code:`# Create Internet Gateway
+IGW_ID=$(aws ec2 create-internet-gateway \\
+  --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=MyVPC-IGW}]' \\
+  --query 'InternetGateway.InternetGatewayId' --output text)
+
+# Attach IGW to VPC
+aws ec2 attach-internet-gateway \\
+  --internet-gateway-id $IGW_ID \\
+  --vpc-id $VPC_ID
+
+echo "Internet Gateway: $IGW_ID — Attached to $VPC_ID"
+
+# Create a route table for PUBLIC subnets
+PUB_RTB=$(aws ec2 create-route-table \\
+  --vpc-id $VPC_ID \\
+  --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=Public-RouteTable}]' \\
+  --query 'RouteTable.RouteTableId' --output text)
+
+# Add route: all internet traffic (0.0.0.0/0) → Internet Gateway
+aws ec2 create-route \\
+  --route-table-id $PUB_RTB \\
+  --destination-cidr-block 0.0.0.0/0 \\
+  --gateway-id $IGW_ID
+
+# Associate route table with public subnets
+aws ec2 associate-route-table --route-table-id $PUB_RTB --subnet-id $PUB_SUBNET_A
+aws ec2 associate-route-table --route-table-id $PUB_RTB --subnet-id $PUB_SUBNET_B
+
+# Create a SEPARATE route table for PRIVATE subnets
+PRIV_RTB=$(aws ec2 create-route-table \\
+  --vpc-id $VPC_ID \\
+  --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=Private-RouteTable}]' \\
+  --query 'RouteTable.RouteTableId' --output text)
+
+aws ec2 associate-route-table --route-table-id $PRIV_RTB --subnet-id $PRIV_SUBNET_A
+aws ec2 associate-route-table --route-table-id $PRIV_RTB --subnet-id $PRIV_SUBNET_B`,
+      lang:"bash"
+    },
+    {
+      n:4, title:"Create Security Groups",
+      why:"Security Groups act as virtual firewalls for EC2 instances. Unlike NACLs, Security Groups are stateful — if you allow inbound traffic, the response is automatically allowed outbound.",
+      warn:"Never use 0.0.0.0/0 for SSH in production. Always restrict to your IP address only!",
+      code:`# Create Security Group for Web Servers (public)
+WEB_SG=$(aws ec2 create-security-group \\
+  --group-name WebServer-SG \\
+  --description "Security group for web servers" \\
+  --vpc-id $VPC_ID \\
+  --query 'GroupId' --output text)
+
+# Allow HTTP from anywhere
+aws ec2 authorize-security-group-ingress \\
+  --group-id $WEB_SG --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+# Allow HTTPS from anywhere
+aws ec2 authorize-security-group-ingress \\
+  --group-id $WEB_SG --protocol tcp --port 443 --cidr 0.0.0.0/0
+
+# Allow SSH ONLY from your IP
+MY_IP=$(curl -s https://checkip.amazonaws.com)
+aws ec2 authorize-security-group-ingress \\
+  --group-id $WEB_SG --protocol tcp --port 22 --cidr ${MY_IP}/32
+
+# Create Security Group for App Servers (private)
+APP_SG=$(aws ec2 create-security-group \\
+  --group-name AppServer-SG \\
+  --description "Security group for app servers" \\
+  --vpc-id $VPC_ID \\
+  --query 'GroupId' --output text)
+
+# Allow traffic from web servers only (using security group reference)
+aws ec2 authorize-security-group-ingress \\
+  --group-id $APP_SG \\
+  --protocol tcp --port 8080 \\
+  --source-group $WEB_SG
+
+echo "Web SG: $WEB_SG"
+echo "App SG: $APP_SG"`,
+      lang:"bash"
+    },
+    {
+      n:5, title:"Launch EC2 Instance in Custom VPC",
+      why:"Now let's put it all together — launch an EC2 instance in your new VPC and connect to it.",
+      body:`We'll create a key pair, launch an EC2 instance in the public subnet, and SSH into it. The instance will have internet access through the Internet Gateway.`,
+      code:`# Create key pair (save it!)
+aws ec2 create-key-pair \\
+  --key-name MyVPCKey \\
+  --query 'KeyMaterial' \\
+  --output text > MyVPCKey.pem
+
+chmod 400 MyVPCKey.pem   # IMPORTANT: restrict permissions
+
+# Get the latest Amazon Linux 2 AMI
+AMI_ID=$(aws ec2 describe-images \\
+  --owners amazon \\
+  --filters "Name=name,Values=amzn2-ami-hvm-*-x86_64-gp2" \\
+            "Name=state,Values=available" \\
+  --query "sort_by(Images,&CreationDate)[-1].ImageId" \\
+  --output text)
+
+echo "Using AMI: $AMI_ID"
+
+# Launch instance in public subnet
+INSTANCE_ID=$(aws ec2 run-instances \\
+  --image-id $AMI_ID \\
+  --instance-type t2.micro \\
+  --key-name MyVPCKey \\
+  --subnet-id $PUB_SUBNET_A \\
+  --security-group-ids $WEB_SG \\
+  --associate-public-ip-address \\
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=WebServer-01}]' \\
+  --user-data '#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Hello from AWS VPC!</h1>" > /var/www/html/index.html' \\
+  --query 'Instances[0].InstanceId' --output text)
+
+echo "Instance ID: $INSTANCE_ID"
+
+# Wait for instance to be running
+aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+
+# Get public IP
+PUBLIC_IP=$(aws ec2 describe-instances \\
+  --instance-ids $INSTANCE_ID \\
+  --query 'Reservations[0].Instances[0].PublicIpAddress' \\
+  --output text)
+
+echo "Public IP: $PUBLIC_IP"
+echo "Connect with: ssh -i MyVPCKey.pem ec2-user@$PUBLIC_IP"`,
+      lang:"bash"
+    }
+  ]
+},
+{
+  num:"08", emoji:"🔗", color:"#7c3aed", bg:"#ede9fe",
+  title:"VPC Peering",
+  sub:"Connect VPCs · Cross-account · Cross-region Peering",
+  pills:{lab:3,task:5,quiz:5},
+  overview:"VPC Peering creates a direct network connection between two VPCs, allowing them to communicate using private IP addresses as if they were on the same network. This is used when you have multiple environments (dev, staging, prod) or multiple teams with separate VPCs that need to share services. Traffic stays within the AWS network — it never goes over the public internet.",
+  objectives:[
+    "Understand when and why to use VPC peering vs VPN vs Transit Gateway",
+    "Create a VPC peering connection between two VPCs in the same account",
+    "Update route tables in BOTH VPCs to enable routing through the peering connection",
+    "Update Security Groups to allow traffic from the peer VPC's CIDR",
+    "Test connectivity using ping and SSH between instances in peered VPCs",
+    "Understand VPC peering limitations (no transitive peering!)"
+  ],
+  steps:[
+    {
+      n:1, title:"Create Two VPCs to Peer",
+      why:"We need two separate VPCs with non-overlapping CIDR blocks — overlapping CIDRs cannot be peered!",
+      warn:"The two VPCs being peered CANNOT have overlapping CIDR blocks. 10.0.0.0/16 and 10.0.0.0/16 will fail. Use 10.0.0.0/16 and 10.1.0.0/16.",
+      code:`# ── Create VPC-A (Network Operations team) ──
+VPC_A=$(aws ec2 create-vpc \\
+  --cidr-block 10.0.0.0/16 \\
+  --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=VPC-A-Network-Ops}]' \\
+  --query 'Vpc.VpcId' --output text)
+
+# ── Create VPC-B (Application team) ──
+VPC_B=$(aws ec2 create-vpc \\
+  --cidr-block 10.1.0.0/16 \\
+  --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=VPC-B-App-Team}]' \\
+  --query 'Vpc.VpcId' --output text)
+
+echo "VPC-A: $VPC_A  (CIDR: 10.0.0.0/16)"
+echo "VPC-B: $VPC_B  (CIDR: 10.1.0.0/16)"
+
+# Create subnet in each VPC
+SUBNET_A=$(aws ec2 create-subnet \\
+  --vpc-id $VPC_A --cidr-block 10.0.1.0/24 \\
+  --query 'Subnet.SubnetId' --output text)
+
+SUBNET_B=$(aws ec2 create-subnet \\
+  --vpc-id $VPC_B --cidr-block 10.1.1.0/24 \\
+  --query 'Subnet.SubnetId' --output text)
+
+echo "Subnet in VPC-A: $SUBNET_A"
+echo "Subnet in VPC-B: $SUBNET_B"`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"Create and Accept Peering Connection",
+      body:`VPC peering has a requester (who initiates) and an accepter (who accepts). If both VPCs are in the same account, you accept it yourself. If different accounts, the other account's owner must log in and accept.`,
+      code:`# Create peering connection (VPC-A requests, VPC-B accepts)
+PEERING_ID=$(aws ec2 create-vpc-peering-connection \\
+  --vpc-id $VPC_A \\
+  --peer-vpc-id $VPC_B \\
+  --tag-specifications 'ResourceType=vpc-peering-connection,Tags=[{Key=Name,Value=VPC-A-to-VPC-B}]' \\
+  --query 'VpcPeeringConnection.VpcPeeringConnectionId' \\
+  --output text)
+
+echo "Peering Connection ID: $PEERING_ID"
+
+# Accept the peering request (same account — you accept it yourself)
+aws ec2 accept-vpc-peering-connection \\
+  --vpc-peering-connection-id $PEERING_ID
+
+# Verify status (should show 'active')
+aws ec2 describe-vpc-peering-connections \\
+  --vpc-peering-connection-ids $PEERING_ID \\
+  --query 'VpcPeeringConnections[0].Status.Code' \\
+  --output text`,
+      lang:"bash"
+    },
+    {
+      n:3, title:"Add Routes in Both VPCs",
+      why:"Peering connection alone is not enough — both VPCs must have routes that say 'to reach the other VPC, use this peering connection'.",
+      body:`This is the most important and most commonly forgotten step! You need routes in BOTH VPCs. VPC-A's route table must route to VPC-B's CIDR via the peering connection, AND vice versa.`,
+      code:`# ── Get existing route table IDs ──
+RTB_A=$(aws ec2 describe-route-tables \\
+  --filters "Name=vpc-id,Values=$VPC_A" \\
+  --query 'RouteTables[0].RouteTableId' --output text)
+
+RTB_B=$(aws ec2 describe-route-tables \\
+  --filters "Name=vpc-id,Values=$VPC_B" \\
+  --query 'RouteTables[0].RouteTableId' --output text)
+
+# ── In VPC-A's route table: route to VPC-B via peering ──
+aws ec2 create-route \\
+  --route-table-id $RTB_A \\
+  --destination-cidr-block 10.1.0.0/16 \\
+  --vpc-peering-connection-id $PEERING_ID
+
+# ── In VPC-B's route table: route to VPC-A via peering ──
+aws ec2 create-route \\
+  --route-table-id $RTB_B \\
+  --destination-cidr-block 10.0.0.0/16 \\
+  --vpc-peering-connection-id $PEERING_ID
+
+# Also update Security Groups to allow traffic from peer CIDR
+# In VPC-B's security group, allow all traffic from VPC-A's CIDR
+aws ec2 authorize-security-group-ingress \\
+  --group-id <sg-id-in-vpc-b> \\
+  --protocol all \\
+  --cidr 10.0.0.0/16
+
+# Test from EC2 in VPC-A: ping private IP of EC2 in VPC-B
+# ssh -i key.pem ec2-user@<vpc-a-public-ip>
+# ping 10.1.0.x`,
+      lang:"bash",
+      tip:"Remember: VPC Peering is NOT transitive! If A peers with B and B peers with C — A cannot talk to C through B. You would need direct peering between A and C, or use AWS Transit Gateway."
+    }
+  ]
+},
+{
+  num:"09", emoji:"🌉", color:"#0891b2", bg:"#cffafe",
+  title:"NAT Gateway",
+  sub:"Private Subnet Internet Access · Elastic IP · High Availability",
+  pills:{lab:3,task:5,quiz:5},
+  overview:"Private subnets don't have direct internet access — that's the whole point of making them private. But your application servers in private subnets still need to download software updates, reach external APIs, or send data to the internet (outbound only). NAT Gateway solves this: it allows outbound internet traffic from private subnets while blocking any inbound connections initiated from the internet.",
+  objectives:[
+    "Understand why private subnets need NAT for outbound internet access",
+    "Allocate an Elastic IP address for the NAT Gateway",
+    "Create a NAT Gateway in a PUBLIC subnet (not private!)",
+    "Update the PRIVATE subnet's route table to route internet traffic through NAT Gateway",
+    "Understand NAT Gateway vs NAT Instance (cost, management, availability)",
+    "Test that private instances can reach internet but cannot be reached from internet"
+  ],
+  steps:[
+    {
+      n:1, title:"Allocate Elastic IP and Create NAT Gateway",
+      why:"NAT Gateway needs a fixed public IP (Elastic IP) so that outbound connections from private instances always come from the same IP.",
+      warn:"NAT Gateway costs money (~$0.045/hr plus data transfer). Always DELETE it when not in use during learning/testing!",
+      body:`The NAT Gateway MUST be created in a PUBLIC subnet (one that has a route to the Internet Gateway). It then translates private IP addresses to its Elastic IP when sending traffic to the internet.`,
+      code:`# ── Step 1: Allocate an Elastic IP ──
+EIP_ALLOC=$(aws ec2 allocate-address \\
+  --domain vpc \\
+  --tag-specifications 'ResourceType=elastic-ip,Tags=[{Key=Name,Value=NAT-Gateway-EIP}]' \\
+  --query 'AllocationId' --output text)
+
+echo "Elastic IP Allocation ID: $EIP_ALLOC"
+
+# See what IP was assigned
+aws ec2 describe-addresses \\
+  --allocation-ids $EIP_ALLOC \\
+  --query 'Addresses[0].PublicIp' --output text
+
+# ── Step 2: Create NAT Gateway in PUBLIC subnet ──
+NAT_GW=$(aws ec2 create-nat-gateway \\
+  --subnet-id $PUB_SUBNET_A \\
+  --allocation-id $EIP_ALLOC \\
+  --tag-specifications 'ResourceType=natgateway,Tags=[{Key=Name,Value=MyNAT-Gateway}]' \\
+  --query 'NatGateway.NatGatewayId' --output text)
+
+echo "NAT Gateway ID: $NAT_GW"
+
+# Wait for NAT Gateway to become available (~1-2 minutes)
+echo "Waiting for NAT Gateway to be available..."
+aws ec2 wait nat-gateway-available --nat-gateway-ids $NAT_GW
+echo "NAT Gateway is ready!"
+
+# Verify
+aws ec2 describe-nat-gateways \\
+  --nat-gateway-ids $NAT_GW \\
+  --query 'NatGateways[0].State' --output text`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"Route Private Subnet Traffic Through NAT",
+      body:`Now we update the private subnet's route table. Instead of having no internet route (current state), we add a default route (0.0.0.0/0) pointing to the NAT Gateway.`,
+      code:`# Add route in PRIVATE route table: internet traffic → NAT Gateway
+aws ec2 create-route \\
+  --route-table-id $PRIV_RTB \\
+  --destination-cidr-block 0.0.0.0/0 \\
+  --nat-gateway-id $NAT_GW
+
+# Verify the route was added
+aws ec2 describe-route-tables \\
+  --route-table-ids $PRIV_RTB \\
+  --query 'RouteTables[0].Routes' \\
+  --output table
+
+# ── Now test from a private instance ──
+# 1. SSH into your bastion/public instance first
+ssh -i key.pem ec2-user@<public-instance-ip>
+
+# 2. From the bastion, SSH into the private instance
+ssh -i key.pem ec2-user@10.0.10.x
+
+# 3. From private instance, test internet access
+curl -s https://checkip.amazonaws.com
+# This should return the NAT Gateway's Elastic IP!
+
+ping 8.8.8.8         # Should work (outbound via NAT)
+
+# 4. BUT nobody from internet can reach private instance
+# (NAT only allows outbound-initiated connections)`,
+      lang:"bash",
+      tip:"High Availability: For production, create one NAT Gateway per Availability Zone. Each private subnet in each AZ should route to the NAT Gateway in the SAME AZ to avoid cross-AZ data transfer charges."
+    },
+    {
+      n:3, title:"Cleanup — Delete NAT Gateway to Stop Charges",
+      why:"NAT Gateway charges by the hour AND by data transfer. Always delete it after lab work.",
+      code:`# Delete NAT Gateway
+aws ec2 delete-nat-gateway --nat-gateway-id $NAT_GW
+
+# Wait for deletion
+aws ec2 wait nat-gateway-deleted --nat-gateway-ids $NAT_GW
+
+# Release Elastic IP (cannot release while attached)
+aws ec2 release-address --allocation-id $EIP_ALLOC
+
+echo "NAT Gateway deleted and Elastic IP released — no more charges!"
+
+# Also remove the route from private route table
+aws ec2 delete-route \\
+  --route-table-id $PRIV_RTB \\
+  --destination-cidr-block 0.0.0.0/0`,
+      lang:"bash"
+    }
+  ]
+},
+{
+  num:"10", emoji:"📋", color:"#dc2626", bg:"#fee2e2",
+  title:"Network Access Control List (NACL)",
+  sub:"Stateless Rules · Subnet-level Filtering · Rule Numbers",
+  pills:{lab:2,task:5,quiz:5},
+  overview:"Network ACLs are subnet-level firewalls that are stateless — unlike Security Groups which are stateful. Stateless means every packet is evaluated against the rules, regardless of whether it's part of an established connection. This means you MUST explicitly allow BOTH inbound AND outbound traffic for any connection to work. NACLs are your last line of defense before a Security Group.",
+  objectives:[
+    "Understand the critical difference: NACLs are STATELESS, Security Groups are STATEFUL",
+    "Create custom NACL rules with proper rule numbers (lower number = higher priority)",
+    "Allow inbound traffic AND the corresponding outbound ephemeral ports",
+    "Associate a custom NACL with one or more subnets",
+    "Use NACLs to block specific IP addresses at the subnet level",
+    "Design a defense-in-depth strategy using both NACLs and Security Groups"
+  ],
+  steps:[
+    {
+      n:1, title:"Create a Custom NACL",
+      why:"The default NACL allows all traffic. For security, create a custom NACL with explicit allow rules.",
+      warn:"NACLs are STATELESS! If you allow inbound HTTP (port 80), you must ALSO allow outbound ephemeral ports (1024-65535) for the response to reach the client. Forgetting this is the #1 NACL mistake!",
+      body:`Rule numbers matter in NACLs. Rules are evaluated in ascending order (lowest number first). The first rule that matches wins. Rule 100 is checked before Rule 200. Always use increments of 100 to leave room for new rules.`,
+      code:`# Create a new NACL in your VPC
+NACL_ID=$(aws ec2 create-network-acl \\
+  --vpc-id $VPC_ID \\
+  --tag-specifications 'ResourceType=network-acl,Tags=[{Key=Name,Value=Web-Layer-NACL}]' \\
+  --query 'NetworkAcl.NetworkAclId' --output text)
+
+echo "NACL ID: $NACL_ID"
+
+# ════════════════════════════════════════════
+# INBOUND RULES (--ingress flag)
+# ════════════════════════════════════════════
+
+# Rule 100: Allow HTTP from anywhere
+aws ec2 create-network-acl-entry \\
+  --network-acl-id $NACL_ID \\
+  --rule-number 100 --protocol tcp --rule-action allow --ingress \\
+  --cidr-block 0.0.0.0/0 --port-range From=80,To=80
+
+# Rule 110: Allow HTTPS from anywhere
+aws ec2 create-network-acl-entry \\
+  --network-acl-id $NACL_ID \\
+  --rule-number 110 --protocol tcp --rule-action allow --ingress \\
+  --cidr-block 0.0.0.0/0 --port-range From=443,To=443
+
+# Rule 120: Allow SSH from specific IP only
+aws ec2 create-network-acl-entry \\
+  --network-acl-id $NACL_ID \\
+  --rule-number 120 --protocol tcp --rule-action allow --ingress \\
+  --cidr-block 203.0.113.0/24 --port-range From=22,To=22
+
+# Rule 130: Block a specific malicious IP
+aws ec2 create-network-acl-entry \\
+  --network-acl-id $NACL_ID \\
+  --rule-number 130 --protocol all --rule-action deny --ingress \\
+  --cidr-block 198.51.100.50/32
+
+# Rule 32766: Deny everything else (implicit deny at end)
+aws ec2 create-network-acl-entry \\
+  --network-acl-id $NACL_ID \\
+  --rule-number 32766 --protocol all --rule-action deny --ingress \\
+  --cidr-block 0.0.0.0/0`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"Add Outbound Rules and Associate with Subnet",
+      body:`Because NACLs are stateless, we need outbound rules too. The most important outbound rule is allowing ephemeral ports (1024-65535) — these are the random high ports used by clients for receiving responses.`,
+      code:`# ════════════════════════════════════════════
+# OUTBOUND RULES (--egress flag)
+# ════════════════════════════════════════════
+
+# Rule 100: Allow HTTP outbound (for downloading updates etc.)
+aws ec2 create-network-acl-entry \\
+  --network-acl-id $NACL_ID \\
+  --rule-number 100 --protocol tcp --rule-action allow --egress \\
+  --cidr-block 0.0.0.0/0 --port-range From=80,To=80
+
+# Rule 110: Allow HTTPS outbound
+aws ec2 create-network-acl-entry \\
+  --network-acl-id $NACL_ID \\
+  --rule-number 110 --protocol tcp --rule-action allow --egress \\
+  --cidr-block 0.0.0.0/0 --port-range From=443,To=443
+
+# Rule 120: Allow ephemeral ports outbound (CRITICAL for stateless!)
+# These are the return ports for inbound HTTP/HTTPS requests
+aws ec2 create-network-acl-entry \\
+  --network-acl-id $NACL_ID \\
+  --rule-number 120 --protocol tcp --rule-action allow --egress \\
+  --cidr-block 0.0.0.0/0 --port-range From=1024,To=65535
+
+# ════════════════════════════════════════════
+# ASSOCIATE NACL WITH A SUBNET
+# ════════════════════════════════════════════
+
+# Find the current association ID for the subnet
+ASSOC_ID=$(aws ec2 describe-network-acls \\
+  --filters "Name=association.subnet-id,Values=$PUB_SUBNET_A" \\
+  --query 'NetworkAcls[0].Associations[?SubnetId==\`'$PUB_SUBNET_A'\`].NetworkAclAssociationId' \\
+  --output text)
+
+# Replace with our custom NACL
+aws ec2 replace-network-acl-association \\
+  --association-id $ASSOC_ID \\
+  --network-acl-id $NACL_ID
+
+# View all rules for our NACL
+aws ec2 describe-network-acls \\
+  --network-acl-ids $NACL_ID \\
+  --query 'NetworkAcls[0].Entries[*].[RuleNumber,Protocol,RuleAction,CidrBlock,PortRange]' \\
+  --output table`,
+      lang:"bash"
+    }
+  ]
+},
+{
+  num:"11", emoji:"💻", color:"#059669", bg:"#d1fae5",
+  title:"EC2 & Elastic Block Storage",
+  sub:"Instance Types · AMIs · EBS · Snapshots · User Data",
+  pills:{lab:4,task:7,quiz:5},
+  overview:"EC2 (Elastic Compute Cloud) is the backbone of AWS — virtual servers you can launch in minutes. EBS (Elastic Block Store) is the persistent disk storage attached to EC2 instances. Together they form the foundation of most AWS architectures. This module covers the full EC2 lifecycle: launching instances with user data scripts, working with different EBS volume types, creating snapshots for backup, and building custom AMIs.",
+  objectives:[
+    "Understand EC2 instance families: t2, t3 (general), m5, r5 (memory), c5 (compute), etc.",
+    "Launch EC2 instances with User Data scripts that run on first boot",
+    "Access EC2 instance metadata from within the instance",
+    "Create, attach, format, and mount EBS volumes",
+    "Create EBS snapshots and restore from snapshots",
+    "Build a custom AMI from a configured EC2 instance"
+  ],
+  steps:[
+    {
+      n:1, title:"Launch EC2 with User Data Script",
+      why:"User Data scripts automate instance configuration at launch — no manual setup needed. This is Infrastructure as Code at the instance level.",
+      note:"User Data runs as root on first boot only. Use it to install packages, create files, and start services.",
+      code:`# Create user data script
+cat > userdata.sh << 'EOF'
+#!/bin/bash
+# Update packages
+yum update -y
+
+# Install web server
+yum install -y httpd
+
+# Start and enable web server
+systemctl start httpd
+systemctl enable httpd
+
+# Install useful tools
+yum install -y git python3 pip3 htop tree
+
+# Create a simple web page
+cat > /var/www/html/index.html << 'HTML'
+<html>
+<head><title>AWS Web Server</title></head>
+<body style="font-family:Arial;text-align:center;padding:50px;background:#f0f4ff">
+<h1>🚀 Hello from AWS EC2!</h1>
+<p>Instance ID: <strong>$(curl -s http://169.254.169.254/latest/meta-data/instance-id)</strong></p>
+<p>Region: <strong>$(curl -s http://169.254.169.254/latest/meta-data/placement/region)</strong></p>
+<p>AZ: <strong>$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)</strong></p>
+</body>
+</html>
+HTML
+
+# Log the launch
+echo "Instance launched at $(date)" > /var/log/launch.log
+EOF
+
+# Launch instance with user data
+INSTANCE_ID=$(aws ec2 run-instances \\
+  --image-id $AMI_ID \\
+  --instance-type t2.micro \\
+  --key-name MyVPCKey \\
+  --subnet-id $PUB_SUBNET_A \\
+  --security-group-ids $WEB_SG \\
+  --associate-public-ip-address \\
+  --user-data file://userdata.sh \\
+  --block-device-mappings '[{"DeviceName":"/dev/xvda","Ebs":{"VolumeSize":20,"VolumeType":"gp3","DeleteOnTermination":true}}]' \\
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=WebServer-UserData}]' \\
+  --query 'Instances[0].InstanceId' --output text)
+
+# Wait until running
+aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+PUBLIC_IP=$(aws ec2 describe-instances \\
+  --instance-ids $INSTANCE_ID \\
+  --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+
+echo "✅ EC2 Ready! IP: $PUBLIC_IP"
+echo "Visit: http://$PUBLIC_IP"`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"EC2 Instance Metadata Service",
+      body:`From inside any EC2 instance, you can query metadata about the instance itself — no credentials needed. This is used by applications to discover configuration dynamically.`,
+      code:`# Run these commands from INSIDE your EC2 instance
+# (SSH in first)
+
+# ── INSTANCE METADATA (IMDSv1 — simple) ──
+BASE="http://169.254.169.254/latest/meta-data"
+
+# Instance identity
+curl -s $BASE/instance-id
+curl -s $BASE/instance-type
+curl -s $BASE/placement/region
+curl -s $BASE/placement/availability-zone
+
+# Network info
+curl -s $BASE/public-ipv4
+curl -s $BASE/local-ipv4
+curl -s $BASE/public-hostname
+curl -s $BASE/mac
+
+# IAM role credentials (if role attached)
+curl -s $BASE/iam/security-credentials/
+curl -s $BASE/iam/security-credentials/EC2-S3-Role
+
+# User data (your launch script)
+curl -s http://169.254.169.254/latest/user-data
+
+# ── IMDSv2 (more secure — required by some AMIs) ──
+# First get a token
+TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" \\
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+
+# Then use it
+curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \\
+  http://169.254.169.254/latest/meta-data/instance-id`,
+      lang:"bash"
+    },
+    {
+      n:3, title:"Create and Attach EBS Volume",
+      body:`Think of EBS volumes like external USB hard drives — you create them, attach them to an instance, then format and mount them. They persist independently of the instance.`,
+      code:`# ── Create EBS Volume ──
+VOL_ID=$(aws ec2 create-volume \\
+  --size 20 \\
+  --volume-type gp3 \\
+  --availability-zone ap-south-1a \\
+  --iops 3000 \\
+  --throughput 125 \\
+  --tag-specifications 'ResourceType=volume,Tags=[{Key=Name,Value=DataVolume}]' \\
+  --query 'VolumeId' --output text)
+
+echo "Volume ID: $VOL_ID"
+
+# Wait for volume to be available
+aws ec2 wait volume-available --volume-ids $VOL_ID
+
+# ── Attach to EC2 Instance ──
+aws ec2 attach-volume \\
+  --volume-id $VOL_ID \\
+  --instance-id $INSTANCE_ID \\
+  --device /dev/sdf
+
+# ── Inside the EC2 instance: Format and Mount ──
+# List block devices (new volume appears as /dev/xvdf)
+lsblk
+
+# Check if it has a filesystem (should be empty — no output)
+sudo file -s /dev/xvdf
+
+# Format with ext4
+sudo mkfs.ext4 /dev/xvdf
+
+# Create mount point
+sudo mkdir -p /data
+
+# Mount the volume
+sudo mount /dev/xvdf /data
+
+# Verify
+df -h | grep /data
+
+# ── Make mount permanent (persist after reboot) ──
+# Get the UUID of the device
+sudo blkid /dev/xvdf
+
+# Add to /etc/fstab using UUID (safer than device name)
+echo "UUID=<paste-uuid-here>  /data  ext4  defaults,nofail  0 2" | sudo tee -a /etc/fstab
+
+# Test fstab without rebooting
+sudo mount -a`,
+      lang:"bash"
+    },
+    {
+      n:4, title:"Create AMI and EBS Snapshots",
+      body:`AMIs (Amazon Machine Images) are snapshots of a complete EC2 instance — OS, installed software, configuration. You can launch new instances from your AMI instantly. Snapshots are EBS-level backups stored in S3.`,
+      code:`# ── Create EBS Snapshot (for backup) ──
+SNAP_ID=$(aws ec2 create-snapshot \\
+  --volume-id $VOL_ID \\
+  --description "DataVolume-backup-$(date +%Y%m%d-%H%M)" \\
+  --tag-specifications 'ResourceType=snapshot,Tags=[{Key=Name,Value=DataVolume-Backup}]' \\
+  --query 'SnapshotId' --output text)
+
+echo "Snapshot: $SNAP_ID"
+
+# Wait for snapshot to complete
+aws ec2 wait snapshot-completed --snapshot-ids $SNAP_ID
+echo "Snapshot complete!"
+
+# Create volume from snapshot (for restore)
+aws ec2 create-volume \\
+  --snapshot-id $SNAP_ID \\
+  --availability-zone ap-south-1a \\
+  --volume-type gp3
+
+# ── Create Custom AMI ──
+# This captures the entire instance state
+AMI_CUSTOM=$(aws ec2 create-image \\
+  --instance-id $INSTANCE_ID \\
+  --name "MyWebServer-$(date +%Y%m%d)" \\
+  --description "Web server with Apache and custom config" \\
+  --no-reboot \\
+  --query 'ImageId' --output text)
+
+echo "Custom AMI: $AMI_CUSTOM"
+
+# Wait for AMI to be available
+aws ec2 wait image-available --image-ids $AMI_CUSTOM
+
+# Launch a new instance from your custom AMI
+aws ec2 run-instances \\
+  --image-id $AMI_CUSTOM \\
+  --instance-type t2.micro \\
+  --key-name MyVPCKey \\
+  --security-group-ids $WEB_SG \\
+  --subnet-id $PUB_SUBNET_A \\
+  --associate-public-ip-address \\
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=Cloned-WebServer}]'`,
+      lang:"bash"
+    }
+  ]
+},
+{
+  num:"12", emoji:"🔑", color:"#f59e0b", bg:"#fef3c7",
+  title:"AWS IAM — Identity & Access Management",
+  sub:"Users · Groups · Roles · Policies · MFA · STS",
+  pills:{lab:4,task:7,quiz:5},
+  overview:"IAM is the security foundation of AWS — it controls who can do what with which resources. Every API call to AWS goes through IAM. Understanding IAM is critical for security, compliance, and building multi-tier architectures. The key principle is least privilege: grant only the minimum permissions necessary. IAM is free — there's no charge for users, groups, roles, or policies.",
+  objectives:[
+    "Create IAM users, groups, and apply managed and inline policies",
+    "Write custom JSON IAM policies with specific Actions and Resources",
+    "Create IAM Roles with trust policies for EC2, Lambda, and cross-account access",
+    "Enable and enforce MFA for IAM users",
+    "Use IAM roles with EC2 instance profiles (no access keys on instances!)",
+    "Understand STS (Security Token Service) and temporary credentials"
+  ],
+  steps:[
+    {
+      n:1, title:"Create IAM Users, Groups, and Policies",
+      why:"Organizing users into groups with attached policies is the scalable way to manage permissions. Don't attach policies directly to users.",
+      note:"Best Practice: Use groups and roles. Attach policies to groups. Users inherit permissions from their groups. Never use the root account for daily work.",
+      code:`# ── Create Groups ──
+aws iam create-group --group-name CloudEngineers
+aws iam create-group --group-name CloudViewers
+aws iam create-group --group-name CloudAdmins
+
+# ── Attach AWS Managed Policies to Groups ──
+# CloudEngineers can manage EC2 and S3
+aws iam attach-group-policy \\
+  --group-name CloudEngineers \\
+  --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+
+aws iam attach-group-policy \\
+  --group-name CloudEngineers \\
+  --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+# CloudViewers can only view (read-only)
+aws iam attach-group-policy \\
+  --group-name CloudViewers \\
+  --policy-arn arn:aws:iam::aws:policy/ReadOnlyAccess
+
+# CloudAdmins have admin access
+aws iam attach-group-policy \\
+  --group-name CloudAdmins \\
+  --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+
+# ── Create IAM Users ──
+aws iam create-user --user-name alice
+aws iam create-user --user-name bob
+aws iam create-user --user-name charlie
+
+# ── Add Users to Groups ──
+aws iam add-user-to-group --user-name alice --group-name CloudEngineers
+aws iam add-user-to-group --user-name bob --group-name CloudViewers
+aws iam add-user-to-group --user-name charlie --group-name CloudAdmins
+
+# ── Create Console Login Profile ──
+aws iam create-login-profile \\
+  --user-name alice \\
+  --password 'TempPass@2025!' \\
+  --password-reset-required
+
+# ── Create Access Keys (for CLI/API) ──
+aws iam create-access-key --user-name alice
+
+# ── View User Info ──
+aws iam get-user --user-name alice
+aws iam list-groups-for-user --user-name alice
+aws iam list-attached-user-policies --user-name alice`,
+      lang:"bash"
+    },
+    {
+      n:2, title:"Write Custom IAM Policies in JSON",
+      why:"AWS managed policies are broad. Custom policies let you grant exactly the permissions you need — nothing more.",
+      body:`IAM policies are JSON documents with: Version, Statement array. Each statement has Effect (Allow/Deny), Action (list of API calls), Resource (which specific resources), and optionally Condition (when the rule applies).`,
+      code:`# ── Custom Policy: S3 access to specific bucket only ──
+cat > s3-bucket-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ListBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetBucketLocation",
+        "s3:GetBucketVersioning"
+      ],
+      "Resource": "arn:aws:s3:::my-team-bucket"
+    },
+    {
+      "Sid": "ObjectActions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::my-team-bucket/*"
+    }
+  ]
+}
+EOF
+
+# Create the policy
+POLICY_ARN=$(aws iam create-policy \\
+  --policy-name S3TeamBucketAccess \\
+  --policy-document file://s3-bucket-policy.json \\
+  --description "Access to team S3 bucket only" \\
+  --query 'Policy.Arn' --output text)
+
+echo "Policy ARN: $POLICY_ARN"
+
+# ── Custom Policy: EC2 read-only + specific tag ──
+cat > ec2-tag-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeInstanceStatus"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:StartInstances",
+        "ec2:StopInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "ec2:ResourceTag/Team": "Engineering"
+        }
+      }
+    }
+  ]
+}
+EOF
+
+aws iam create-policy \\
+  --policy-name EC2TeamTagAccess \\
+  --policy-document file://ec2-tag-policy.json`,
+      lang:"bash"
+    },
+    {
+      n:3, title:"Create IAM Role for EC2 Instances",
+      why:"EC2 instances should NEVER have access keys hardcoded. Use IAM Roles instead — they automatically provide temporary credentials that rotate every hour.",
+      body:`An IAM Role has two parts: a Trust Policy (who can assume this role — in this case, EC2 service) and Permission Policies (what they can do once they assume the role).`,
+      code:`# ── Create Trust Policy (who can assume the role) ──
+cat > ec2-trust-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+
+# ── Create the Role ──
+aws iam create-role \\
+  --role-name EC2-S3-ReadOnly-Role \\
+  --assume-role-policy-document file://ec2-trust-policy.json \\
+  --description "Allows EC2 instances to read S3 buckets"
+
+# ── Attach Permission Policy to Role ──
+aws iam attach-role-policy \\
+  --role-name EC2-S3-ReadOnly-Role \\
+  --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+# ── Create Instance Profile (required to attach role to EC2) ──
+aws iam create-instance-profile \\
+  --instance-profile-name EC2-S3-Profile
+
+aws iam add-role-to-instance-profile \\
+  --instance-profile-name EC2-S3-Profile \\
+  --role-name EC2-S3-ReadOnly-Role
+
+# ── Attach Role to Running EC2 Instance ──
+aws ec2 associate-iam-instance-profile \\
+  --instance-id $INSTANCE_ID \\
+  --iam-instance-profile Name=EC2-S3-Profile
+
+# ── Verify from inside the instance ──
+# ssh into instance, then:
+# aws s3 ls  (works without any aws configure!)
+# aws sts get-caller-identity  (shows the role ARN)`,
+      lang:"bash"
+    },
+    {
+      n:4, title:"Enable MFA and Password Policy",
+      why:"MFA (Multi-Factor Authentication) is the single most effective security control you can enable. Always require it for all IAM users.",
+      code:`# ── Set Account Password Policy ──
+aws iam update-account-password-policy \\
+  --minimum-password-length 12 \\
+  --require-uppercase-characters \\
+  --require-lowercase-characters \\
+  --require-numbers \\
+  --require-symbols \\
+  --max-password-age 90 \\
+  --password-reuse-prevention 12 \\
+  --allow-users-to-change-password
+
+# View current password policy
+aws iam get-account-password-policy
+
+# ── Create Policy: Force MFA for everything ──
+# This policy DENIES all actions except setting up MFA
+# if the user has not authenticated with MFA
+cat > require-mfa-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyWithoutMFA",
+      "Effect": "Deny",
+      "NotAction": [
+        "iam:CreateVirtualMFADevice",
+        "iam:EnableMFADevice",
+        "iam:GetUser",
+        "iam:ListMFADevices",
+        "iam:ListVirtualMFADevices",
+        "iam:ResyncMFADevice",
+        "sts:GetSessionToken"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "BoolIfExists": {
+          "aws:MultiFactorAuthPresent": "false"
+        }
+      }
+    }
+  ]
+}
+EOF
+
+aws iam create-policy \\
+  --policy-name ForceMFA \\
+  --policy-document file://require-mfa-policy.json
+
+# Attach to all users group
+aws iam attach-group-policy \\
+  --group-name CloudEngineers \\
+  --policy-arn arn:aws:iam::<ACCOUNT-ID>:policy/ForceMFA
+
+# ── Check MFA status for all users ──
+aws iam list-users --query 'Users[*].UserName' --output text | \\
+  tr '\\t' '\\n' | \\
+  while read user; do
+    mfa=$(aws iam list-mfa-devices --user-name $user --query 'length(MFADevices)' --output text)
+    echo "$user: MFA devices = $mfa"
+  done`,
+      lang:"bash"
+    }
+  ]
+}
+];
+
+// ═══════════════════════════════════════════════
+//  DATA — TASKS
+// ═══════════════════════════════════════════════
+const TASKS = [
+  // EASY
+  {id:1,diff:"easy",title:"Install AWS CLI v2 and configure credentials",desc:"Install AWS CLI v2 on your Linux machine. Run 'aws configure' with your IAM credentials. Verify with 'aws sts get-caller-identity'. Expected output: your Account ID, UserId, and ARN.",tags:["CLI","IAM","Setup"]},
+  {id:2,diff:"easy",title:"Create your first VPC with CIDR 10.0.0.0/16",desc:"Create a new VPC in ap-south-1 with CIDR 10.0.0.0/16. Tag it with Name=MyFirstVPC. Enable DNS hostnames. Verify using 'aws ec2 describe-vpcs'.",tags:["VPC","Networking"]},
+  {id:3,diff:"easy",title:"Create a public and private subnet",desc:"Inside your VPC, create a public subnet (10.0.1.0/24) in AZ-a and a private subnet (10.0.2.0/24) in AZ-b. Tag them appropriately. Verify they appear in the console.",tags:["VPC","Subnets"]},
+  {id:4,diff:"easy",title:"Create a security group for a web server",desc:"Create a security group in your VPC allowing inbound TCP 80, TCP 443, and TCP 22 (from your IP only). All outbound should be allowed. Name it WebServer-SG.",tags:["Security Groups","VPC"]},
+  {id:5,diff:"easy",title:"Launch a free-tier EC2 instance",desc:"Launch a t2.micro Amazon Linux 2 instance in your public subnet. Use the security group you created. Assign a public IP. SSH into it and run 'whoami' and 'uname -r'.",tags:["EC2","SSH"]},
+  {id:6,diff:"easy",title:"Create an S3 bucket and upload a file",desc:"Create an S3 bucket with a globally unique name. Enable versioning. Upload a text file from the CLI using 'aws s3 cp'. List the bucket contents.",tags:["S3","Storage"]},
+  {id:7,diff:"easy",title:"Create an IAM user and add to a group",desc:"Create an IAM user 'testuser'. Create a group 'Viewers'. Attach AmazonEC2ReadOnlyAccess to the group. Add testuser to the group. Create a login profile.",tags:["IAM","Security"]},
+  {id:8,diff:"easy",title:"List all AWS resources using CLI",desc:"Use AWS CLI to list: all EC2 instances (with state and IP), all S3 buckets, all VPCs, and all IAM users. Output in table format. Save results to a text file.",tags:["CLI","Automation"]},
+  {id:9,diff:"easy",title:"Linux: Set up users and permissions",desc:"Create a Linux user 'devuser'. Create a group 'devteam'. Add devuser to the group. Create a directory /projects. Set permissions so only devteam members can write to it.",tags:["Linux","Permissions"]},
+  {id:10,diff:"easy",title:"Schedule a cron job for system backup",desc:"Write a bash script that copies /etc to /backup/etc-$(date +%Y%m%d). Schedule it to run every day at 2 AM using cron. Verify with 'crontab -l'.",tags:["Linux","Cron","Scripting"]},
+
+  // MEDIUM
+  {id:11,diff:"medium",title:"Build a complete VPC with IGW and routing",desc:"Create a VPC with 2 public subnets and 2 private subnets across two AZs. Attach an Internet Gateway. Create public and private route tables. Associate each subnet to its route table. Verify routing works by launching an EC2 in the public subnet and reaching the internet.",tags:["VPC","IGW","Routing","Networking"]},
+  {id:12,diff:"medium",title:"Configure VPC Peering between two VPCs",desc:"Create VPC-A (10.0.0.0/16) and VPC-B (10.1.0.0/16). Establish a peering connection. Add routes in BOTH VPCs. Launch EC2 in each VPC. Test private IP connectivity from VPC-A instance to VPC-B instance using ping.",tags:["VPC Peering","Networking"]},
+  {id:13,diff:"medium",title:"Set up NAT Gateway for private subnet access",desc:"Create a NAT Gateway with an Elastic IP in your public subnet. Update the private subnet route table to route 0.0.0.0/0 through the NAT Gateway. Launch an EC2 in the private subnet. SSH through a bastion host and verify the private instance can curl https://checkip.amazonaws.com.",tags:["NAT","VPC","Routing"]},
+  {id:14,diff:"medium",title:"Create custom NACL with allow/deny rules",desc:"Create a custom NACL. Add rules to allow HTTP (80) and HTTPS (443) inbound, deny a specific IP. Add outbound rules including ephemeral ports (1024-65535). Associate with your public subnet. Test that HTTP works but the blocked IP cannot connect.",tags:["NACL","Security","VPC"]},
+  {id:15,diff:"medium",title:"Create EBS volume, attach, format, and persist mount",desc:"Create a 20GB gp3 EBS volume. Attach it to an EC2 instance as /dev/sdf. SSH in, run lsblk to confirm. Format with ext4, create mount point /data, mount it. Add to /etc/fstab using UUID. Reboot and verify it auto-mounts.",tags:["EBS","Storage","Linux"]},
+  {id:16,diff:"medium",title:"Write a custom IAM policy for least privilege",desc:"Write a JSON IAM policy that allows: ListBucket and GetObject on a specific S3 bucket, DescribeInstances for all EC2, and StartInstances/StopInstances only for instances tagged Environment=Development. Attach to a test user and verify it works.",tags:["IAM","Policy","Security"]},
+  {id:17,diff:"medium",title:"Set up a bastion host for secure private access",desc:"Create a bastion host EC2 in public subnet (only your IP can SSH to it). Create app server EC2 in private subnet (only the bastion's security group can SSH to it). Use SSH agent forwarding to jump through bastion to app server.",tags:["EC2","Security","SSH","Networking"]},
+  {id:18,diff:"medium",title:"Create an EC2 IAM Role and test from instance",desc:"Create an IAM role with S3ReadOnlyAccess and CloudWatchLogsFullAccess. Create an instance profile. Launch an EC2 and attach the role. SSH in and run 'aws s3 ls' and 'aws sts get-caller-identity' — it should work WITHOUT 'aws configure'.",tags:["IAM","EC2","Roles"]},
+  {id:19,diff:"medium",title:"Linux: Set up LVM with extend and snapshot",desc:"Create a physical volume on /dev/sdb. Create a volume group 'datavg'. Create a 5GB logical volume. Format with ext4 and mount at /mnt/data. Extend it by 3GB without unmounting. Take an LVM snapshot.",tags:["Linux","LVM","Storage"]},
+  {id:20,diff:"medium",title:"Configure NFS server and mount on client",desc:"On Server VM: Install NFS server, create /srv/share, add export for 192.168.1.0/24 with rw,sync. On Client VM: Install nfs-common, mount the share at /mnt/nfs. Create a file from the client and verify it appears on the server.",tags:["Linux","NFS","Storage","Networking"]},
+
+  // HARD
+  {id:21,diff:"hard",title:"Build a 3-Tier Architecture on AWS",desc:"Design and deploy: Tier 1 — Application Load Balancer in public subnet. Tier 2 — 2 EC2 app servers in private subnet, registered with ALB. Tier 3 — RDS MySQL in dedicated private subnet. Include security groups that allow only necessary traffic between tiers. Verify the app is reachable through the ALB URL.",tags:["Architecture","ALB","EC2","RDS","VPC"]},
+  {id:22,diff:"hard",title:"Automate VPC provisioning with Python boto3",desc:"Write a Python script using boto3 that creates a complete VPC environment: VPC, 2 public subnets, 2 private subnets, IGW, public/private route tables, NAT Gateway, and a web server security group. Accept the VPC name and CIDR as command-line arguments. Print all created resource IDs.",tags:["Python","boto3","Automation","VPC"]},
+  {id:23,diff:"hard",title:"Implement cross-account IAM role access",desc:"Account A: Create a policy allowing sts:AssumeRole for a specific role in Account B. Account B: Create a role with trust policy for Account A. Test: From Account A CLI, assume the role in Account B using 'aws sts assume-role'. Access S3 in Account B using the assumed role temporary credentials.",tags:["IAM","Cross-Account","STS","Advanced"]},
+  {id:24,diff:"hard",title:"Build an automated EC2 snapshot lifecycle script",desc:"Write a Python/bash script that: lists all EBS volumes with a specific tag, creates snapshots of each, copies them to a secondary region, deletes snapshots older than 30 days, and sends a summary email/SNS notification. Schedule it with cron.",tags:["EBS","Snapshots","Python","Automation","S3"]},
+  {id:25,diff:"hard",title:"Set up a high-availability NAT Gateway architecture",desc:"Create 2 NAT Gateways (one per AZ). Create separate private route tables for each AZ's private subnets — each routing to the NAT Gateway in the SAME AZ. Launch 4 private EC2 instances (2 per AZ). Verify all can reach internet. Simulate AZ failure by deleting one NAT Gateway — verify the other AZ still works.",tags:["NAT","HA","VPC","Architecture"]},
+];
+
+// ═══════════════════════════════════════════════
+//  DATA — CHECKPOINTS
+// ═══════════════════════════════════════════════
+const CHECKPOINTS = [
+  {
+    title:"Networking Fundamentals Checkpoint",
+    module:"Modules 1–3",
+    icon:"🌐",
+    color:"#2563eb",
+    bg:"#dbeafe",
+    questions:[
+      {q:"Which OSI layer is responsible for logical addressing (IP addresses) and routing?",opts:["Layer 2 — Data Link","Layer 3 — Network","Layer 4 — Transport","Layer 5 — Session"],ans:1},
+      {q:"What is the difference between TCP and UDP?",opts:["TCP is faster, UDP is reliable","TCP is reliable (handshake + ACK), UDP is faster but unreliable","Both are the same","UDP uses port numbers, TCP does not"],ans:1},
+      {q:"What does /24 mean in CIDR notation 192.168.1.0/24?",opts:["24 usable host addresses","First 24 bits are the network portion (256 total IPs)","24 different subnets","24 routers in the path"],ans:1},
+      {q:"Which command shows your current routing table on Linux?",opts:["ping -r","ip route show","traceroute -r","netstat --routes"],ans:1},
+      {q:"A stateful firewall vs a stateless firewall — what is the key difference?",opts:["Stateful is faster","Stateful tracks connection state (auto-allows responses), stateless evaluates every packet independently","Stateless is more secure","They are identical in behavior"],ans:1}
+    ]
+  },
+  {
+    title:"Linux Administration Checkpoint",
+    module:"Modules 4–5",
+    icon:"🐧",
+    color:"#dc2626",
+    bg:"#fee2e2",
+    questions:[
+      {q:"What chmod command makes a file readable and executable by everyone, but writable only by the owner?",opts:["chmod 644","chmod 777","chmod 755","chmod 700"],ans:2},
+      {q:"Why must SSH private key files (.pem) have chmod 400 or 600?",opts:["It's just a convention","SSH client refuses connection if key is accessible by others (too open permissions)","AWS requires it in the terms of service","To speed up SSH connection"],ans:1},
+      {q:"What is the difference between 'systemctl stop nginx' and 'systemctl disable nginx'?",opts:["They do the same thing","stop halts it now; disable prevents it from starting on boot","disable halts it now; stop prevents boot start","Neither actually stops the service"],ans:1},
+      {q:"In LVM, what is the correct order of creation?",opts:["LV → VG → PV","VG → PV → LV","PV → VG → LV","PV → LV → VG"],ans:2},
+      {q:"What does 'kill -9' do differently from 'kill -15'?",opts:["They are identical","kill -9 (SIGKILL) force-kills immediately; kill -15 (SIGTERM) asks process to shutdown gracefully","kill -15 is instant; kill -9 waits","kill -9 only works on root processes"],ans:1}
+    ]
+  },
+  {
+    title:"AWS Cloud Fundamentals Checkpoint",
+    module:"Module 6",
+    icon:"☁️",
+    color:"#f59e0b",
+    bg:"#fef3c7",
+    questions:[
+      {q:"What is the AWS Shared Responsibility Model?",opts:["AWS is responsible for everything","Customer is responsible for everything","AWS manages infrastructure/hardware security; customer manages OS, apps, data, and configuration","AWS manages applications; customer manages hardware"],ans:2},
+      {q:"What is an AWS Availability Zone?",opts:["A global DNS location","One or more discrete data centers with redundant power, networking, and connectivity","The same as an AWS Region","A CDN edge location"],ans:1},
+      {q:"Which AWS service model gives you the most control over the infrastructure?",opts:["SaaS","PaaS","IaaS","FaaS"],ans:2},
+      {q:"Where do you get your AWS CLI Access Key ID and Secret Access Key?",opts:["AWS Support","IAM → Users → Security Credentials → Create access key","From the EC2 console","From the root account billing page"],ans:1},
+      {q:"What does 'aws sts get-caller-identity' tell you?",opts:["Network latency to AWS","Your current IAM identity: Account, UserID, and ARN","Your billing usage","Your EC2 instance count"],ans:1}
+    ]
+  },
+  {
+    title:"VPC and Networking Checkpoint",
+    module:"Modules 7–10",
+    icon:"🏗️",
+    color:"#7c3aed",
+    bg:"#ede9fe",
+    questions:[
+      {q:"What is the maximum number of IP addresses in a /24 subnet, and how many are usable?",opts:["256 total, 256 usable","256 total, 251 usable (AWS reserves 5)","254 total, 254 usable","512 total, 507 usable"],ans:1},
+      {q:"An Internet Gateway is attached to your VPC. Why can't a private subnet instance still reach the internet?",opts:["The IGW is broken","The private subnet's route table has no route to the IGW","Security groups are blocking it","NACLs are preventing it"],ans:1},
+      {q:"Where MUST a NAT Gateway be placed to work correctly?",opts:["In a private subnet","In a dedicated NAT subnet","In a public subnet (a subnet with a route to IGW)","In any subnet"],ans:2},
+      {q:"VPC Peering does NOT support transitive peering. What does this mean?",opts:["Peering is permanent and cannot be deleted","If A peers with B, and B peers with C — A and C cannot communicate through B","Peering only works within the same account","Peering requires VPN"],ans:1},
+      {q:"What is the critical difference between a Security Group and a NACL?",opts:["Security Groups are for EC2; NACLs are for RDS","Security Groups are stateful (auto-allow responses); NACLs are stateless (must explicitly allow both directions)","NACLs are per-instance; Security Groups are per-subnet","They are functionally identical"],ans:1}
+    ]
+  },
+  {
+    title:"EC2, EBS & IAM Checkpoint",
+    module:"Modules 11–12",
+    icon:"🔑",
+    color:"#059669",
+    bg:"#d1fae5",
+    questions:[
+      {q:"Why should you NEVER store AWS access keys directly on an EC2 instance?",opts:["It slows down the instance","If the instance is compromised, your keys are stolen. Use IAM Roles instead — they provide temporary rotating credentials","AWS doesn't allow it","It violates SLA agreements"],ans:1},
+      {q:"What happens to data on an EBS volume when you terminate an EC2 instance?",opts:["It is always deleted","It depends on the 'Delete on Termination' flag set at launch (root volume defaults to true, additional volumes default to false)","It is always preserved","It moves to S3 automatically"],ans:1},
+      {q:"An IAM policy has BOTH an explicit Allow and an explicit Deny for s3:DeleteObject. Which wins?",opts:["Allow wins","Deny wins — explicit Deny always overrides Allow","The most specific rule wins","The last statement wins"],ans:1},
+      {q:"What is an EC2 Instance Profile?",opts:["A billing tag on an EC2 instance","A container that holds an IAM Role, allowing it to be attached to an EC2 instance","The instance's hardware specification","The instance's detailed configuration snapshot"],ans:1},
+      {q:"What is User Data in EC2?",opts:["The data files stored on the instance","A script that runs automatically on first instance boot as root user","The instance's metadata endpoint","The instance's IAM permissions"],ans:1}
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════
+//  DATA — LINUX COMMANDS
+// ═══════════════════════════════════════════════
+const LINUX_CMDS = [
+  // File System
+  {cat:"File System",name:"ls",syntax:"ls [OPTIONS] [PATH]",desc:"List directory contents. Essential for navigation. -l gives long format, -a shows hidden files, -h makes sizes human-readable.",eg:"ls -la /home\nls -lh /var/log\nls -la --color=auto"},
+  {cat:"File System",name:"cd",syntax:"cd [DIRECTORY]",desc:"Change the current working directory. Use ~ for home, .. for parent directory, - to go back to previous directory.",eg:"cd /etc/nginx\ncd ~\ncd ..\ncd -"},
+  {cat:"File System",name:"pwd",syntax:"pwd",desc:"Print Working Directory — shows your current location in the file system. Use before destructive commands to confirm you're in the right place.",eg:"pwd\n# Output: /home/ec2-user/projects"},
+  {cat:"File System",name:"mkdir",syntax:"mkdir [-p] DIRECTORY",desc:"Create new directories. The -p flag creates all parent directories that don't exist yet and doesn't error if directory already exists.",eg:"mkdir myproject\nmkdir -p /data/backups/2025/jan\nmkdir -p ~/aws/labs/vpc"},
+  {cat:"File System",name:"rm",syntax:"rm [-rf] FILE/DIR",desc:"Remove files or directories. DANGER: rm is permanent — no trash/recycle bin! -r for recursive (directories), -f to force without prompting.",eg:"rm file.txt\nrm -rf /tmp/old_stuff/\nrm -i important.conf  # -i asks before each file"},
+  {cat:"File System",name:"cp",syntax:"cp [-r] SOURCE DEST",desc:"Copy files or directories. -r is required for directories. Always double-check source and destination before running.",eg:"cp config.txt config.txt.bak\ncp -r /var/www /backup/www-$(date +%Y%m%d)\ncp *.log /archive/"},
+  {cat:"File System",name:"mv",syntax:"mv SOURCE DEST",desc:"Move or rename files/directories. Unlike cp, mv doesn't need -r for directories. If destination doesn't exist, it renames the file.",eg:"mv old_name.txt new_name.txt\nmv /tmp/deploy.tar.gz /opt/app/\nmv *.json /data/json/"},
+  {cat:"File System",name:"find",syntax:"find PATH -name PATTERN",desc:"Recursively search for files matching criteria — by name, size, type, date, permissions, owner, and more.",eg:"find / -name '*.pem' -type f\nfind /var/log -mtime -1 -name '*.log'\nfind . -size +100M\nfind /home -user ec2-user"},
+  {cat:"File System",name:"cat",syntax:"cat [FILES]",desc:"Concatenate and display file contents. Good for small files. Use less for large files so you can scroll.",eg:"cat /etc/hosts\ncat ~/.aws/credentials\ncat file1.txt file2.txt > combined.txt"},
+
+  // Text Processing
+  {cat:"Text Processing",name:"grep",syntax:"grep [OPTIONS] PATTERN [FILE]",desc:"Search for text patterns in files or piped input. One of the most powerful tools for log analysis and filtering.",eg:"grep 'ERROR' /var/log/app.log\ngrep -r 'aws_access_key' ~/\ngrep -n 'LISTEN' /etc/services\nps aux | grep nginx"},
+  {cat:"Text Processing",name:"sed",syntax:"sed 's/OLD/NEW/g' FILE",desc:"Stream editor for find-and-replace operations on text. Used extensively in automation scripts.",eg:"sed 's/http/https/g' config.txt\nsed -i 's/localhost/10.0.1.5/g' app.conf\nsed '/^#/d' config.txt  # Delete comment lines"},
+  {cat:"Text Processing",name:"awk",syntax:"awk '{print $N}' FILE",desc:"Powerful text processing language. Great for extracting columns, filtering, and aggregating data.",eg:"awk '{print $1}' /var/log/nginx/access.log\nps aux | awk '{print $1, $2, $11}'\ndf -h | awk 'NR>1 {print $1, $5}'"},
+  {cat:"Text Processing",name:"tail",syntax:"tail [-f] [-n N] FILE",desc:"Show the last N lines of a file. The -f flag follows the file in real-time — essential for monitoring logs.",eg:"tail -50 /var/log/syslog\ntail -f /var/log/nginx/error.log\ntail -f /var/log/cloud-init.log  # Check EC2 user-data progress"},
+  {cat:"Text Processing",name:"less",syntax:"less FILE",desc:"View file contents one page at a time. Better than cat for large files. Press / to search, q to quit, G for end.",eg:"less /var/log/syslog\nless +F /var/log/nginx/access.log  # Follow mode\naws ec2 describe-instances | less"},
+  {cat:"Text Processing",name:"wc",syntax:"wc [-l] FILE",desc:"Count lines, words, or characters. -l counts lines. Useful for quick statistics on log files.",eg:"wc -l /etc/passwd  # Count users\ngrep 'ERROR' app.log | wc -l  # Count errors\nls /var/log/*.log | wc -l"},
+
+  // Permissions
+  {cat:"Permissions",name:"chmod",syntax:"chmod MODE FILE",desc:"Change file permissions. Use octal (755) or symbolic (u+x) notation. 4=read, 2=write, 1=execute.",eg:"chmod 755 script.sh   # rwxr-xr-x\nchmod 644 config.txt  # rw-r--r--\nchmod 400 key.pem     # r--------  (SSH keys!)\nchmod -R 755 /var/www/"},
+  {cat:"Permissions",name:"chown",syntax:"chown USER[:GROUP] FILE",desc:"Change ownership of files and directories. Must be root to change owner. -R applies recursively.",eg:"chown ec2-user:ec2-user file.txt\nchown -R www-data:www-data /var/www/\nchown root:sudo /usr/local/bin/myscript"},
+  {cat:"Permissions",name:"sudo",syntax:"sudo COMMAND",desc:"Execute a command as another user (usually root). Configured in /etc/sudoers. Prefer 'sudo -i' or 'sudo -s' for interactive root sessions.",eg:"sudo apt update\nsudo systemctl restart nginx\nsudo -i  # Switch to root\nsudo -u postgres psql"},
+  {cat:"Permissions",name:"su",syntax:"su [-] [USER]",desc:"Switch user. 'su -' loads the target user's full environment. Without argument, switches to root.",eg:"su - alice\nsu -  # switch to root\nsu - postgres"},
+
+  // Processes
+  {cat:"Processes",name:"ps",syntax:"ps [aux] [OPTIONS]",desc:"Show running processes. 'ps aux' shows all processes with user, CPU, memory. Combine with grep to find specific processes.",eg:"ps aux\nps aux | grep python\nps -ef --forest  # Tree view\nps -p 1234 -o pid,cmd,cpu"},
+  {cat:"Processes",name:"top",syntax:"top",desc:"Real-time process viewer. Shows CPU, memory, processes sorted by usage. Press k to kill, r to renice, q to quit, M to sort by memory.",eg:"top\ntop -u ec2-user  # Only show user's processes\ntop -d 2  # Update every 2 seconds"},
+  {cat:"Processes",name:"htop",syntax:"htop",desc:"Enhanced version of top with color, scrolling, and easier process management. Install: sudo apt install htop",eg:"htop\nhtop -u www-data\nhtop -s PERCENT_MEM"},
+  {cat:"Processes",name:"kill",syntax:"kill [-SIGNAL] PID",desc:"Send signals to processes. Default is SIGTERM (15 = graceful). Use SIGKILL (9 = force) only when process won't respond.",eg:"kill 1234          # SIGTERM (graceful)\nkill -9 1234       # SIGKILL (force)\nkill -HUP 1234     # Reload config\npkill -f nginx     # Kill by name"},
+
+  // Networking
+  {cat:"Networking",name:"ip addr",syntax:"ip addr [show] [INTERFACE]",desc:"Show and manage network interfaces and IP addresses. Modern replacement for ifconfig. Essential for troubleshooting network issues.",eg:"ip addr show\nip addr show eth0\nip addr add 192.168.1.100/24 dev eth0  # Add IP\nip addr del 192.168.1.100/24 dev eth0  # Remove IP"},
+  {cat:"Networking",name:"ip route",syntax:"ip route [show|add|del]",desc:"Show and manage the routing table. Determines where network traffic goes. Critical for VPC and networking troubleshooting.",eg:"ip route show\nip route add 10.0.0.0/8 via 192.168.1.1\nip route del 10.0.0.0/8\nip route get 8.8.8.8  # Which route would be used?"},
+  {cat:"Networking",name:"ping",syntax:"ping [-c COUNT] HOST",desc:"Test network connectivity using ICMP echo packets. If ping fails: check if host is up, firewall rules, and network routing.",eg:"ping -c 4 google.com\nping -c 4 8.8.8.8\nping -i 0.5 -c 10 10.0.1.5  # Fast ping to private IP"},
+  {cat:"Networking",name:"ssh",syntax:"ssh [-i KEY] USER@HOST",desc:"Secure Shell — encrypted remote terminal access. Always use SSH keys, never passwords in production. Use -i to specify key file.",eg:"ssh ec2-user@54.123.45.67\nssh -i ~/.ssh/MyKey.pem ec2-user@10.0.1.5\nssh -A ec2-user@bastion  # Agent forwarding\nssh -L 8080:localhost:80 user@host  # Port forward"},
+  {cat:"Networking",name:"scp",syntax:"scp [-i KEY] SRC DST",desc:"Secure Copy — copy files over SSH. Syntax mirrors cp but with user@host:path for remote locations.",eg:"scp -i key.pem file.txt ec2-user@1.2.3.4:/home/ec2-user/\nscp -i key.pem -r ./folder/ ec2-user@1.2.3.4:/tmp/\nscp ec2-user@1.2.3.4:/var/log/app.log ./local/"},
+  {cat:"Networking",name:"curl",syntax:"curl [OPTIONS] URL",desc:"Transfer data with URLs. Test APIs, download files, check HTTP headers, send POST requests. The most versatile networking tool.",eg:"curl https://checkip.amazonaws.com\ncurl -o output.zip https://example.com/file.zip\ncurl -s -o /dev/null -w '%{http_code}' http://mysite.com\ncurl -X POST -H 'Content-Type: application/json' -d '{\"key\":\"val\"}' https://api.example.com"},
+  {cat:"Networking",name:"netstat/ss",syntax:"ss -tuln",desc:"Show network sockets and listening ports. ss is the modern replacement for netstat. Use to verify which services are listening.",eg:"ss -tuln         # All listening TCP/UDP ports\nss -tlnp         # Include process names\nss -s            # Summary statistics\nnetstat -rn      # Old-style routing table"},
+  {cat:"Networking",name:"nmap",syntax:"nmap [OPTIONS] TARGET",desc:"Network scanner — discover hosts and open ports. Use ONLY on your own systems or with permission. Excellent for security auditing.",eg:"nmap 192.168.1.1       # Basic scan\nnmap -sV 10.0.1.0/24  # Version detection on subnet\nnmap -p 22,80,443 10.0.1.5  # Specific ports only"},
+
+  // Disk
+  {cat:"Disk & Storage",name:"df",syntax:"df [-h] [PATH]",desc:"Show disk space usage of filesystems. -h makes sizes human-readable (GB, MB). Essential for monitoring disk capacity.",eg:"df -h             # All filesystems\ndf -h /data       # Specific mount point\ndf -h --total     # With total row"},
+  {cat:"Disk & Storage",name:"du",syntax:"du [-sh] [PATH]",desc:"Show disk usage of files and directories. -s gives a summary, -h makes it human-readable. Use to find what's eating your disk space.",eg:"du -sh /var/log/           # Total size of log dir\ndu -sh * | sort -h         # Sort by size\ndu -h /var/log/*.log       # Specific files"},
+  {cat:"Disk & Storage",name:"lsblk",syntax:"lsblk [OPTIONS]",desc:"List block devices (disks and partitions) in a tree format. Essential first step when attaching EBS volumes to EC2.",eg:"lsblk\nlsblk -f           # Include filesystem type and UUID\nlsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT"},
+  {cat:"Disk & Storage",name:"mount",syntax:"mount [OPTIONS] DEVICE POINT",desc:"Mount a filesystem at a directory. After mounting, the device's contents are accessible at the mount point.",eg:"sudo mount /dev/xvdf /data\nsudo mount -t nfs 10.0.1.5:/share /mnt/nfs\nmount | grep xvdf     # Verify mount\nsudo umount /data     # Unmount"},
+  {cat:"Disk & Storage",name:"mkfs",syntax:"mkfs.TYPE DEVICE",desc:"Create a filesystem on a block device. Run this before mounting a new EBS volume. Common types: ext4, xfs, btrfs.",eg:"sudo mkfs.ext4 /dev/xvdf\nsudo mkfs.xfs /dev/xvdg\nsudo mkfs.ext4 -L DataVolume /dev/xvdf  # With label"},
+
+  // AWS CLI
+  {cat:"AWS CLI",name:"aws configure",syntax:"aws configure [--profile NAME]",desc:"Set up AWS credentials, region, and output format. Stored in ~/.aws/credentials and ~/.aws/config.",eg:"aws configure\naws configure --profile prod\naws configure list   # Show current config\naws configure get region"},
+  {cat:"AWS CLI",name:"aws s3",syntax:"aws s3 COMMAND [OPTIONS]",desc:"Manage S3 buckets and objects. ls, cp, mv, rm, sync, mb (make bucket), rb (remove bucket). Add --dryrun to preview.",eg:"aws s3 ls\naws s3 ls s3://my-bucket/\naws s3 cp local.txt s3://bucket/remote.txt\naws s3 sync ./folder s3://bucket/backup/\naws s3 rm s3://bucket/file.txt"},
+  {cat:"AWS CLI",name:"aws ec2",syntax:"aws ec2 COMMAND [OPTIONS]",desc:"Full EC2 management: describe, run, start, stop, terminate instances, manage security groups, key pairs, and more.",eg:"aws ec2 describe-instances --output table\naws ec2 start-instances --instance-ids i-xxx\naws ec2 stop-instances --instance-ids i-xxx\naws ec2 describe-security-groups"},
+  {cat:"AWS CLI",name:"aws iam",syntax:"aws iam COMMAND [OPTIONS]",desc:"Manage IAM users, groups, roles, and policies from the CLI.",eg:"aws iam list-users --output table\naws iam list-roles\naws iam get-user --user-name alice\naws iam list-attached-user-policies --user-name alice"},
+  {cat:"AWS CLI",name:"aws sts",syntax:"aws sts COMMAND",desc:"Security Token Service — check identity, assume roles, and get temporary credentials.",eg:"aws sts get-caller-identity\naws sts assume-role --role-arn arn:aws:iam::123:role/MyRole --role-session-name test"},
+
+  // Systemd
+  {cat:"Systemd",name:"systemctl",syntax:"systemctl COMMAND SERVICE",desc:"Control system services and daemons. The primary tool for service management in modern Linux.",eg:"systemctl start nginx\nsystemctl stop nginx\nsystemctl restart nginx\nsystemctl enable nginx\nsystemctl status nginx\nsystemctl list-units --type=service"},
+  {cat:"Systemd",name:"journalctl",syntax:"journalctl [OPTIONS]",desc:"View systemd journal logs. Filter by service, time, boot. Follow live with -f. Essential for debugging service issues.",eg:"journalctl -u nginx\njournalctl -u nginx -f         # Follow live\njournalctl -u nginx -n 100    # Last 100 lines\njournalctl -b                 # Current boot\njournalctl --since '1 hour ago'"},
+
+  // Scripting
+  {cat:"Scripting",name:"bash",syntax:"bash SCRIPT.sh",desc:"Run bash scripts. Always start scripts with #!/bin/bash. Use set -e to exit on error and set -x to trace execution.",eg:"bash myscript.sh\nbash -x debug_script.sh  # With trace\nsource config.sh          # Load variables\nchmod +x script.sh && ./script.sh"},
+  {cat:"Scripting",name:"env/export",syntax:"export VAR=VALUE",desc:"Set environment variables. Use export to make them available to child processes. View all with env or printenv.",eg:"export AWS_REGION=ap-south-1\nexport DB_PASSWORD='secret'\nenv | grep AWS\nprintenv PATH"},
+  {cat:"Scripting",name:"crontab",syntax:"crontab [-e|-l|-r]",desc:"Manage scheduled tasks (cron jobs). -e to edit, -l to list, -r to remove all. System cron jobs in /etc/cron.d/",eg:"crontab -e\ncrontab -l\ncrontab -l -u alice  # Another user's crontab (root only)\n# Format: MIN HOUR DAY MON WEEKDAY CMD"},
+];
+
+// ═══════════════════════════════════════════════
+//  DATA — FINAL ASSESSMENT
+// ═══════════════════════════════════════════════
+const FINAL_Q = [
+  {q:"An EC2 instance in a private subnet needs to install software updates from the internet. Which solution allows OUTBOUND-only internet access without exposing the instance to inbound connections?",opts:["Internet Gateway attached to the private subnet","VPC Peering connection","NAT Gateway in a public subnet with a route in the private subnet's route table","Elastic IP attached to the private instance"],ans:2},
+  {q:"You have VPC-A (10.0.0.0/16) and VPC-B (10.0.0.0/16). Can you create a VPC peering connection between them?",opts:["Yes, VPC peering always works regardless of CIDR","No — overlapping CIDR blocks cannot be peered","Yes, but only within the same region","Yes, but you need a NAT Gateway between them"],ans:1},
+  {q:"You add a rule to a NACL allowing inbound HTTP (port 80). Users still cannot load your website. What is the most likely reason?",opts:["Security group is blocking port 80","The route table is missing","No outbound rule allowing ephemeral ports (1024-65535) — NACLs are stateless","The IGW needs to be restarted"],ans:2},
+  {q:"An IAM policy has Statement A: Allow s3:* on * — and Statement B: Deny s3:DeleteObject on *. What can the user do?",opts:["Everything including DeleteObject (Allow wins)","Everything EXCEPT DeleteObject (Deny wins)","Nothing — conflicting policies cancel out","Only DeleteObject is allowed"],ans:1},
+  {q:"What is the AWS Shared Responsibility Model for EC2?",opts:["AWS manages everything","Customer manages everything","AWS manages the physical infrastructure, hypervisor, and networking hardware. Customer manages OS, patches, application, and security groups.","AWS manages the OS; Customer manages the application"],ans:2},
+  {q:"You terminate an EC2 instance. The root EBS volume had DeleteOnTermination=true. The additional data volume had DeleteOnTermination=false. What happens?",opts:["Both volumes are deleted","Both volumes are preserved","Root volume is deleted; data volume is preserved and becomes unattached","Root volume is preserved; data volume is deleted"],ans:2},
+  {q:"Which of the following BEST describes why IAM Roles should be used on EC2 instead of access keys?",opts:["Roles are faster than access keys","Roles provide temporary, automatically-rotating credentials — no risk of keys being stolen from the instance","Roles support more AWS services","Access keys are more expensive"],ans:1},
+  {q:"A company needs EC2 instances in Account B to access S3 in Account A. What is the MOST SECURE approach?",opts:["Share Account A's root access keys with Account B","Create an IAM Role in Account A with trust policy for Account B. Attach the role to EC2 in Account B using STS AssumeRole.","Copy Access Keys from Account A and store them in Account B EC2 user data","Give Account B administrator access to Account A"],ans:1},
+  {q:"What does the command 'chmod 640 file.txt' result in?",opts:["rw-rw-r-- (user=rw, group=rw, others=r)","rwx-r--r-- (user=rwx, group=r, others=r)","rw-r----- (user=rw, group=r, others=nothing)","rw-rw---- (user=rw, group=rw, others=nothing)"],ans:2},
+  {q:"A private instance is accessing the internet through a NAT Gateway. What IP address does the external server see for this connection?",opts:["The private instance's private IP (10.0.x.x)","The VPC's IP address","The NAT Gateway's Elastic IP address","The EC2 instance's AMI ID"],ans:2},
+  {q:"What command lists all currently listening TCP and UDP ports with their process names?",opts:["ps aux | grep listen","ip route show","ss -tlnp","netstat -a | grep LISTEN"],ans:2},
+  {q:"You need to run a script at EC2 launch to install Apache and start it. Where do you provide this script?",opts:["In the /etc/rc.local file after launch","As the 'User Data' field when launching the instance — runs automatically on first boot as root","As an S3 object that EC2 downloads manually","In the IAM Role attached to the instance"],ans:1},
+  {q:"VPC peering is NOT transitive. VPC-A peers with VPC-B, and VPC-B peers with VPC-C. Can VPC-A communicate with VPC-C?",opts:["Yes, through VPC-B automatically","Yes, but only with additional routing","No — VPC peering is not transitive. You need a direct peering between A and C, or use AWS Transit Gateway.","Yes, but only if all three use the same CIDR block"],ans:2},
+  {q:"What is the correct LVM creation order?",opts:["VG → PV → LV → Format → Mount","LV → VG → PV → Format → Mount","PV → VG → LV → Format → Mount","Format → PV → VG → LV → Mount"],ans:2},
+  {q:"In a systemd service unit file, what does 'After=network.target' mean?",opts:["The service runs before the network","The service will be started AFTER the network is ready","The service requires no network","The service runs as a network daemon"],ans:1}
+];
+
+// ═══════════════════════════════════════════════
+//  RENDER FUNCTIONS
+// ═══════════════════════════════════════════════
+
+const modStatus = {};
+
+function renderModules() {
+  const g = document.getElementById('modulesGrid');
+  g.innerHTML = MODULES.map((m, i) => `
+    <div class="mod-card" onclick="openModal(${i})">
+      <div class="mod-top">
+        <div class="mod-icon" style="background:${m.bg}">${m.emoji}</div>
+        <div class="mod-info">
+          <h3><span style="color:${m.color};font-family:'IBM Plex Mono',monospace;font-size:12px;margin-right:6px">Module ${m.num}</span>${m.title}</h3>
+          <p>${m.sub}</p>
         </div>
-        <div class="hero-visual">
-            <div class="aws-services-grid">
-                <div class="service-card mini">
-                    <span class="service-icon">🖥️</span>
-                    <span>EC2</span>
-                </div>
-                <div class="service-card mini">
-                    <span class="service-icon">📦</span>
-                    <span>S3</span>
-                </div>
-                <div class="service-card mini">
-                    <span class="service-icon">🔐</span>
-                    <span>IAM</span>
-                </div>
-                <div class="service-card mini">
-                    <span class="service-icon">🌐</span>
-                    <span>VPC</span>
-                </div>
-            </div>
+      </div>
+      <div class="mod-bottom">
+        <span class="mod-pill pill-lab">🔬 ${m.pills.lab} Labs</span>
+        <span class="mod-pill pill-task">🎯 ${m.pills.task} Tasks</span>
+        <span class="mod-pill pill-quiz">✅ ${m.pills.quiz} Quiz</span>
+        <span class="mod-status s-todo" id="ms${i}">TODO</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openModal(i) {
+  const m = MODULES[i];
+  document.getElementById('modalIcon').style.cssText = `background:${m.bg};font-size:22px`;
+  document.getElementById('modalIcon').textContent = m.emoji;
+  document.getElementById('modalTitle').textContent = `Module ${m.num} — ${m.title}`;
+  document.getElementById('modalSub').textContent = m.sub;
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="lesson-nav">
+      <button class="lnav-btn active" onclick="switchLesson(this,'lp-overview-${i}')">📖 Overview & Objectives</button>
+      <button class="lnav-btn" onclick="switchLesson(this,'lp-lab-${i}')">🔬 Hands-On Lab</button>
+    </div>
+
+    <div class="lpane active" id="lp-overview-${i}">
+      <div class="overview-box">
+        <h4>📘 Module Overview</h4>
+        <p>${m.overview}</p>
+      </div>
+      <div class="objectives">
+        <h4>🎯 Learning Objectives</h4>
+        <div class="obj-list">
+          ${m.objectives.map(o => `<div class="obj-item"><span class="obj-check">✔</span><span>${o}</span></div>`).join('')}
         </div>
-    </header>
+      </div>
+    </div>
 
-    <!-- Why Practical Learning -->
-    <section class="section why-practical" id="about">
-        <div class="container">
-            <h2 class="section-title">Why Hands-On Learning Works</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Learn by Doing</h3>
-                    <p>Research shows active learning improves retention by 75%. Every lab includes actual console steps and CLI commands you execute yourself.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Job-Ready Skills</h3>
-                    <p>Practice the exact scenarios you'll face in AWS certification exams and real-world DevOps roles. No filler content.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔧</div>
-                    <h3>Copy-Paste Commands</h3>
-                    <p>Every command is tested and ready to use. Includes both Amazon Linux and Ubuntu variations where applicable.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🛡️</div>
-                    <h3>Error Prevention</h3>
-                    <p>Each lab includes "Common Mistakes" sections based on real student errors. Learn what not to do before it happens.</p>
-                </div>
+    <div class="lpane" id="lp-lab-${i}">
+      <div class="lab-intro">
+        <div class="lab-intro-icon">⚠️</div>
+        <div><strong>Before You Start:</strong> Make sure AWS CLI is configured (<code>aws configure</code>) and you have appropriate IAM permissions. All commands are tested on Amazon Linux 2 / Ubuntu 22.04.</div>
+      </div>
+      ${m.steps.map(s => `
+        <div class="step-block">
+          <div class="step-hdr">
+            <div class="step-num">0${s.n}</div>
+            <div class="step-txt">
+              <h4>${s.title}</h4>
+              ${s.why ? `<p>🎯 <em>${s.why}</em></p>` : ''}
             </div>
+          </div>
+          <div class="step-body">
+            ${s.body ? `<p>${s.body}</p>` : ''}
+            ${s.note ? `<div class="note-box"><strong>💡 NOTE</strong>${s.note}</div>` : ''}
+            ${s.warn ? `<div class="warn-box"><strong>⚠️ WARNING</strong>${s.warn}</div>` : ''}
+            <div class="code-wrap">
+              <div class="code-top">
+                <div class="code-lang">
+                  <span class="lang-dot dot-${s.lang||'bash'}"></span>
+                  ${(s.lang||'bash').toUpperCase()}
+                </div>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              </div>
+              <pre>${escHtml(s.code)}</pre>
+            </div>
+            ${s.tip ? `<div class="tip-box"><strong>✅ PRO TIP</strong>${s.tip}</div>` : ''}
+          </div>
         </div>
-    </section>
+        ${s.n < m.steps.length ? '<div class="step-sep"></div>' : ''}
+      `).join('')}
+    </div>
+  `;
 
-    <!-- Services Overview -->
-    <section class="section services-overview" id="services">
-        <div class="container">
-            <h2 class="section-title">Lab Modules</h2>
-            <p class="section-subtitle">Seven comprehensive hands-on labs covering core AWS services</p>
-            
-            <div class="services-grid">
-                <a href="services/ec2.html" class="service-link">
-                    <div class="service-card-large">
-                        <div class="service-header">
-                            <span class="service-badge compute">Compute</span>
-                            <h3>EC2</h3>
-                        </div>
-                        <p>Launch instances, configure security groups, install Apache/Nginx, host static websites, SSH connectivity.</p>
-                        <ul class="task-list">
-                            <li>✓ Launch EC2 Instance</li>
-                            <li>✓ SSH Connection</li>
-                            <li>✓ Web Server Setup</li>
-                            <li>✓ Security Groups</li>
-                        </ul>
-                        <span class="start-lab">Start Lab →</span>
-                    </div>
-                </a>
+  const el = document.getElementById(`ms${i}`);
+  if(el && !modStatus[i]) { el.className='mod-status s-active'; el.textContent='IN PROGRESS'; modStatus[i]='active'; updateProgress(); }
+  document.getElementById('overlay').classList.add('open');
+}
 
-                <a href="services/s3.html" class="service-link">
-                    <div class="service-card-large">
-                        <div class="service-header">
-                            <span class="service-badge storage">Storage</span>
-                            <h3>S3</h3>
-                        </div>
-                        <p>Create buckets, enable static website hosting, configure bucket policies, manage access control.</p>
-                        <ul class="task-list">
-                            <li>✓ Create Bucket</li>
-                            <li>✓ Static Hosting</li>
-                            <li>✓ Bucket Policies</li>
-                            <li>✓ Access Control</li>
-                        </ul>
-                        <span class="start-lab">Start Lab →</span>
-                    </div>
-                </a>
+function switchLesson(btn, id) {
+  const body = btn.closest('.modal-body') || document.getElementById('modalBody');
+  body.querySelectorAll('.lpane').forEach(p => p.classList.remove('active'));
+  body.querySelectorAll('.lnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
 
-                <a href="services/iam.html" class="service-link">
-                    <div class="service-card-large">
-                        <div class="service-header">
-                            <span class="service-badge security">Security</span>
-                            <h3>IAM</h3>
-                        </div>
-                        <p>Create users and groups, manage roles, write custom policies, implement least privilege access.</p>
-                        <ul class="task-list">
-                            <li>✓ Create Users</li>
-                            <li>✓ Manage Roles</li>
-                            <li>✓ Custom Policies</li>
-                            <li>✓ Access Keys</li>
-                        </ul>
-                        <span class="start-lab">Start Lab →</span>
-                    </div>
-                </a>
+function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+function closeOverlay(e) { if(e.target.id==='overlay') closeModal(); }
 
-                <a href="services/vpc.html" class="service-link">
-                    <div class="service-card-large">
-                        <div class="service-header">
-                            <span class="service-badge network">Network</span>
-                            <h3>VPC</h3>
-                        </div>
-                        <p>Build custom VPCs, create subnets, configure internet gateways, set up route tables, network ACLs.</p>
-                        <ul class="task-list">
-                            <li>✓ Custom VPC</li>
-                            <li>✓ Subnets</li>
-                            <li>✓ Internet Gateway</li>
-                            <li>✓ Route Tables</li>
-                        </ul>
-                        <span class="start-lab">Start Lab →</span>
-                    </div>
-                </a>
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-                <a href="services/rds.html" class="service-link">
-                    <div class="service-card-large">
-                        <div class="service-header">
-                            <span class="service-badge database">Database</span>
-                            <h3>RDS</h3>
-                        </div>
-                        <p>Launch managed databases, configure security groups, connect from EC2, backup and restore operations.</p>
-                        <ul class="task-list">
-                            <li>✓ Launch Database</li>
-                            <li>✓ Security Groups</li>
-                            <li>✓ EC2 Connection</li>
-                            <li>✓ Snapshots</li>
-                        </ul>
-                        <span class="start-lab">Start Lab →</span>
-                    </div>
-                </a>
+function copyCode(btn) {
+  const code = btn.closest('.code-wrap').querySelector('pre').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
 
-                <a href="services/cloudwatch.html" class="service-link">
-                    <div class="service-card-large">
-                        <div class="service-header">
-                            <span class="service-badge monitoring">Monitoring</span>
-                            <h3>CloudWatch</h3>
-                        </div>
-                        <p>Set up monitoring dashboards, create alarms, configure notifications, analyze logs and metrics.</p>
-                        <ul class="task-list">
-                            <li>✓ Dashboards</li>
-                            <li>✓ Alarms</li>
-                            <li>✓ Notifications</li>
-                            <li>✓ Log Analysis</li>
-                        </ul>
-                        <span class="start-lab">Start Lab →</span>
-                    </div>
-                </a>
+function markModuleDone(i) {
+  const el = document.getElementById(`ms${i}`);
+  if(el) { el.className='mod-status s-done'; el.textContent='DONE'; modStatus[i]='done'; updateProgress(); }
+}
 
-                <a href="services/loadbalancer.html" class="service-link">
-                    <div class="service-card-large">
-                        <div class="service-header">
-                            <span class="service-badge balance">Load Balancing</span>
-                            <h3>Load Balancer</h3>
-                        </div>
-                        <p>Create target groups, register EC2 instances, configure health checks, distribute traffic.</p>
-                        <ul class="task-list">
-                            <li>✓ Target Groups</li>
-                            <li>✓ Attach EC2</li>
-                            <li>✓ Health Checks</li>
-                            <li>✓ Traffic Distribution</li>
-                        </ul>
-                        <span class="start-lab">Start Lab →</span>
-                    </div>
-                </a>
-            </div>
+function updateProgress() {
+  const done = Object.values(modStatus).filter(v=>v==='done').length;
+  const active = Object.values(modStatus).filter(v=>v==='active').length;
+  const total = 12;
+  const pct = Math.round(((done + active*0.5)/total)*100);
+  document.getElementById('progFill').style.width = pct+'%';
+  document.getElementById('progLabel').textContent = `${done} / ${total} modules`;
+}
+
+// ── TASKS ──
+let taskFilter = 'all';
+const taskDone = {};
+
+function renderTasks(filter='all') {
+  taskFilter = filter;
+  const list = filter === 'all' ? TASKS : TASKS.filter(t => t.diff === filter);
+  document.getElementById('tasksGrid').innerHTML = list.map(t => `
+    <div class="task-card">
+      <div class="task-check ${taskDone[t.id]?'done':''}" onclick="toggleTask(${t.id},this)">
+        ${taskDone[t.id] ? '<span style="color:#fff;font-size:14px">✓</span>' : ''}
+      </div>
+      <div class="task-main">
+        <div class="task-head">
+          <span class="diff-badge db-${t.diff}">${t.diff.toUpperCase()}</span>
+          <h4>${t.title}</h4>
         </div>
-    </section>
+        <p>${t.desc}</p>
+        <div class="task-tags">${t.tags.map(tg=>`<span class="ttag">${tg}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
 
-    <!-- Lab Structure -->
-    <section class="section lab-structure">
-        <div class="container">
-            <h2 class="section-title">Every Lab Follows This Structure</h2>
-            <div class="structure-timeline">
-                <div class="timeline-item">
-                    <div class="timeline-number">1</div>
-                    <div class="timeline-content">
-                        <h3>Objective</h3>
-                        <p>Clear statement of what you'll build and why it matters in production environments.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-number">2</div>
-                    <div class="timeline-content">
-                        <h3>Architecture</h3>
-                        <p>Visual explanation of components and how they interact in the AWS ecosystem.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-number">3</div>
-                    <div class="timeline-content">
-                        <h3>Console Steps</h3>
-                        <p>Click-by-click instructions with screenshots descriptions for AWS Management Console.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-number">4</div>
-                    <div class="timeline-content">
-                        <h3>CLI Commands</h3>
-                        <p>Copy-paste ready commands with explanations. Includes both Amazon Linux and Ubuntu.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-number">5</div>
-                    <div class="timeline-content">
-                        <h3>Verification</h3>
-                        <p>Expected outputs and how to confirm your setup is working correctly.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-number">6</div>
-                    <div class="timeline-content">
-                        <h3>Common Mistakes</h3>
-                        <p>Pitfalls that trip up beginners and how to avoid them.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-number">7</div>
-                    <div class="timeline-content">
-                        <h3>Hands-On Task</h3>
-                        <p>Independent challenge to reinforce learning without step-by-step instructions.</p>
-                    </div>
-                </div>
-            </div>
+function toggleTask(id, el) {
+  if(taskDone[id]) { delete taskDone[id]; el.classList.remove('done'); el.innerHTML=''; }
+  else { taskDone[id]=true; el.classList.add('done'); el.innerHTML='<span style="color:#fff;font-size:14px">✓</span>'; }
+}
+
+function filterTasks(f, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.className = b.className.replace(/ on$/,'');
+  });
+  btn.className += ' on';
+  renderTasks(f);
+}
+
+// ── CHECKPOINTS ──
+function renderCheckpoints() {
+  document.getElementById('checkpointContent').innerHTML = CHECKPOINTS.map((cp,ci) => `
+    <div class="cp-card">
+      <div class="cp-hdr">
+        <div class="cp-icon" style="background:${cp.bg};font-size:22px">${cp.icon}</div>
+        <div>
+          <h3>${cp.title}</h3>
+          <span>${cp.module} · ${cp.questions.length} Questions</span>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer" id="contact">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-section">
-                    <h4>Cloud Hands-On Lab</h4>
-                    <p>Practical AWS training for developers, DevOps engineers, and cloud architects. Build real skills through hands-on practice.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="services/ec2.html">EC2 Lab</a></li>
-                        <li><a href="services/s3.html">S3 Lab</a></li>
-                        <li><a href="services/iam.html">IAM Lab</a></li>
-                        <li><a href="services/vpc.html">VPC Lab</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="services/rds.html">RDS Lab</a></li>
-                        <li><a href="services/cloudwatch.html">CloudWatch Lab</a></li>
-                        <li><a href="services/loadbalancer.html">Load Balancer Lab</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Contact</h4>
-                    <p>Questions about the labs?</p>
-                    <a href="mailto:labs@cloudhandson.dev" class="contact-email">labs@cloudhandson.dev</a>
-                    <div class="social-links">
-                        <a href="#" aria-label="GitHub">📧</a>
-                        <a href="#" aria-label="Twitter">🐦</a>
-                        <a href="#" aria-label="LinkedIn">💼</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Cloud Hands-On Lab. Built for GitHub Pages. Free for educational use.</p>
-            </div>
+      </div>
+      ${cp.questions.map((q,qi) => `
+        <div class="question-block" id="cp${ci}q${qi}">
+          <div class="q-text"><span class="q-num">Q${qi+1}.</span>${q.q}</div>
+          <div class="options">
+            ${q.opts.map((o,oi) => `
+              <div class="opt" onclick="checkOpt(${ci},${qi},${oi},${q.ans},this)">
+                <span class="opt-letter">${'ABCD'[oi]}</span>${o}
+              </div>
+            `).join('')}
+          </div>
         </div>
-    </footer>
+      `).join('')}
+    </div>
+  `).join('');
+}
 
-    <script src="js/script.js"></script>
+function checkOpt(ci, qi, oi, ans, el) {
+  const block = document.getElementById(`cp${ci}q${qi}`);
+  block.querySelectorAll('.opt').forEach((o, i) => {
+    o.classList.remove('correct','wrong','selected');
+    if(i === ans) o.classList.add('correct');
+    else if(i === oi && oi !== ans) o.classList.add('wrong');
+  });
+}
+
+// ── LINUX COMMANDS ──
+function renderLinux(cat='All') {
+  const cats = [...new Set(LINUX_CMDS.map(c=>c.cat))];
+  document.getElementById('cmdFilterBar').innerHTML =
+    ['All', ...cats].map(c => `<button class="cmd-filter ${cat===c?'on':''}" onclick="renderLinux('${c}')">${c}</button>`).join('');
+
+  const list = cat === 'All' ? LINUX_CMDS : LINUX_CMDS.filter(c => c.cat === cat);
+  document.getElementById('cmdGrid').innerHTML = list.map(c => `
+    <div class="cmd-card">
+      <div class="cmd-top">
+        <span class="cmd-name">$ ${c.name}</span>
+        <span class="cmd-cat-badge">${c.cat}</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-syntax">${escHtml(c.syntax)}</div>
+        <div class="cmd-desc">${c.desc}</div>
+        <div class="cmd-eg">${c.eg.replace(/\n/g,'<br>')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── FINAL ASSESSMENT ──
+const faSelected = {};
+
+function renderAssessment() {
+  document.getElementById('assessContent').innerHTML = `
+    <div class="assess-intro">
+      <h3>🏆 Final Assessment — All 12 Modules</h3>
+      <p>This assessment tests your understanding of Networking, Linux, AWS VPC, EC2, IAM, and more. Answer all 15 questions then click Submit. You need 70% (11/15) to pass.</p>
+      <div class="assess-meta">
+        <div class="a-meta">📝 15 Questions</div>
+        <div class="a-meta">⏱ No time limit</div>
+        <div class="a-meta">✅ Pass: 70% (11/15)</div>
+        <div class="a-meta">🔄 Retake anytime</div>
+      </div>
+    </div>
+    <div class="cp-card">
+      ${FINAL_Q.map((q,i) => `
+        <div class="question-block" id="faq${i}">
+          <div class="q-text"><span class="q-num">Q${i+1}.</span>${q.q}</div>
+          <div class="options">
+            ${q.opts.map((o,oi) => `
+              <div class="opt" onclick="selectFinal(${i},${oi},${q.ans},this)">
+                <span class="opt-letter">${'ABCD'[oi]}</span>${o}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ${i < FINAL_Q.length-1 ? '<div style="height:1px;background:#e2e8f0;margin:16px 0"></div>' : ''}
+      `).join('')}
+      <button class="submit-btn" onclick="submitAssessment()">Submit Assessment 🚀</button>
+      <div class="result-box" id="faResult"></div>
+    </div>
+  `;
+}
+
+function selectFinal(qi, oi, ans, el) {
+  const block = document.getElementById(`faq${qi}`);
+  block.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  faSelected[qi] = {sel:oi, ans};
+}
+
+function submitAssessment() {
+  let score = 0;
+  const total = FINAL_Q.length;
+  for(let i=0; i<total; i++) {
+    const block = document.getElementById(`faq${i}`);
+    const a = faSelected[i];
+    block.querySelectorAll('.opt').forEach((o,oi) => {
+      o.classList.remove('correct','wrong','selected');
+      if(oi === FINAL_Q[i].ans) o.classList.add('correct');
+      else if(a && oi === a.sel && a.sel !== FINAL_Q[i].ans) o.classList.add('wrong');
+    });
+    if(a && a.sel === a.ans) score++;
+  }
+  const pct = Math.round((score/total)*100);
+  const pass = pct >= 70;
+  const el = document.getElementById('faResult');
+  el.style.display = 'flex';
+  el.className = `result-box ${pass?'result-pass':'result-fail'}`;
+  el.innerHTML = `
+    <div class="score-big">${score}/${total}</div>
+    <div style="font-size:20px">${pass?'🎉 PASSED!':'❌ Not Passed — Keep Studying'}</div>
+    <div style="font-size:14px;font-weight:500;margin-top:4px">${pct}% correct · ${pass?'Excellent! You are ready for AWS certification.':'You need '+Math.ceil(total*0.7-score)+' more correct answers to pass. Review failed questions and retry.'}</div>
+    ${!pass?`<button onclick="resetAssessment()" style="margin-top:10px;padding:8px 20px;background:#dc2626;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:700">Retry Assessment</button>`:''}
+  `;
+  el.scrollIntoView({behavior:'smooth'});
+}
+
+function resetAssessment() {
+  Object.keys(faSelected).forEach(k => delete faSelected[k]);
+  renderAssessment();
+}
+
+// ── TAB SWITCHING ──
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── INIT ──
+renderModules();
+renderTasks();
+renderCheckpoints();
+renderLinux();
+renderAssessment();
+</script>
 </body>
 </html>
