@@ -1,174 +1,701 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>AWS Cloud Practitioner Guide</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f4f6f9;
-    }
-
-    header {
-      background: #232f3e;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    nav {
-      background: #131a22;
-      padding: 10px;
-      text-align: center;
-    }
-
-    nav a {
-      color: white;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    section {
-      padding: 30px;
-      margin: 20px;
-      background: white;
-      border-radius: 8px;
-    }
-
-    h2 {
-      color: #232f3e;
-    }
-
-    pre {
-      background: #1e1e1e;
-      color: #00ff90;
-      padding: 15px;
-      overflow-x: auto;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: #232f3e;
-      color: white;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Junior Cloud Computing Associate</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --card: #1a2236;
+    --border: #1e3a5f;
+    --aws-orange: #ff9900;
+    --aws-yellow: #ffcc00;
+    --accent-blue: #00b4d8;
+    --accent-green: #00e676;
+    --accent-red: #ff5252;
+    --text: #e8eaf6;
+    --muted: #7986a8;
+    --easy: #00e676;
+    --medium: #ffa726;
+    --hard: #ff5252;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; line-height: 1.6; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(255,153,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,153,0,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+  header { position: sticky; top: 0; z-index: 100; background: rgba(10,14,26,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 2rem; }
+  .header-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; gap: 12px; font-size: 1.1rem; font-weight: 800; color: var(--aws-orange); text-decoration: none; }
+  .logo-icon { width: 36px; height: 36px; background: var(--aws-orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+  nav { display: flex; gap: 2rem; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; cursor: pointer; }
+  nav a:hover { color: var(--aws-orange); }
+  .progress-bar-top { position: fixed; top: 64px; left: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--aws-orange), var(--aws-yellow)); z-index: 99; transition: width 0.1s; }
+  .hero { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 80px 2rem 60px; display: grid; grid-template-columns: 1fr 380px; gap: 60px; align-items: center; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,153,0,0.1); border: 1px solid rgba(255,153,0,0.3); border-radius: 100px; padding: 6px 16px; font-size: 0.78rem; font-weight: 700; color: var(--aws-orange); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 24px; }
+  .pulse { width: 8px; height: 8px; background: var(--aws-orange); border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+  h1 { font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+  h1 span { background: linear-gradient(135deg, var(--aws-orange), var(--aws-yellow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-desc { color: var(--muted); font-size: 1.05rem; margin-bottom: 36px; max-width: 520px; line-height: 1.7; }
+  .hero-stats { display: flex; gap: 32px; margin-bottom: 36px; }
+  .stat { text-align: center; }
+  .stat-num { font-size: 1.8rem; font-weight: 800; color: var(--aws-orange); font-family: 'Space Mono', monospace; }
+  .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; transition: all 0.2s; text-decoration: none; font-family: 'Syne', sans-serif; }
+  .btn-primary { background: var(--aws-orange); color: #000; }
+  .btn-primary:hover { background: var(--aws-yellow); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,153,0,0.3); }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--aws-orange); color: var(--aws-orange); }
+  .progress-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 28px; position: relative; overflow: hidden; }
+  .progress-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(255,153,0,0.15) 0%, transparent 70%); border-radius: 50%; }
+  .progress-card h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 20px; }
+  .module-progress { display: flex; flex-direction: column; gap: 12px; }
+  .mod-item { display: flex; align-items: center; gap: 12px; font-size: 0.82rem; }
+  .mod-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .mod-dot.done { background: var(--easy); }
+  .mod-dot.active { background: var(--aws-orange); animation: pulse 1.5s infinite; }
+  .mod-dot.todo { background: var(--border); }
+  .mod-name { flex: 1; }
+  .mod-pct { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--muted); }
+  .overall-progress { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .overall-progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px; }
+  .progress-track { height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--aws-orange), var(--aws-yellow)); border-radius: 100px; }
+  .main { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 0 2rem 80px; display: grid; grid-template-columns: 280px 1fr; gap: 40px; }
+  .sidebar { position: sticky; top: 80px; height: fit-content; }
+  .sidebar-section { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+  .sidebar-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 16px; font-weight: 700; }
+  .module-nav { display: flex; flex-direction: column; gap: 4px; }
+  .module-nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 0.82rem; border: 1px solid transparent; }
+  .module-nav-item:hover { background: rgba(255,153,0,0.08); border-color: rgba(255,153,0,0.2); }
+  .module-nav-item.active { background: rgba(255,153,0,0.12); border-color: rgba(255,153,0,0.3); color: var(--aws-orange); }
+  .nav-num { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); min-width: 20px; }
+  .nav-check { font-size: 0.7rem; color: var(--easy); }
+  .content { min-width: 0; }
+  .module-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; margin-bottom: 32px; overflow: hidden; transition: border-color 0.3s; animation: fadeInUp 0.4s ease; }
+  .module-card:hover { border-color: rgba(255,153,0,0.3); }
+  .module-header { padding: 28px 32px; display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; cursor: pointer; border-bottom: 1px solid transparent; transition: border-color 0.3s; }
+  .module-card.expanded .module-header { border-bottom-color: var(--border); }
+  .module-header-left { display: flex; align-items: flex-start; gap: 20px; flex: 1; }
+  .module-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; background: rgba(255,153,0,0.1); border: 1px solid rgba(255,153,0,0.2); }
+  .module-meta h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+  .module-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+  .tag-hands { background: rgba(0,180,216,0.15); color: var(--accent-blue); border: 1px solid rgba(0,180,216,0.3); }
+  .tag-linux { background: rgba(255,82,82,0.12); color: var(--accent-red); border: 1px solid rgba(255,82,82,0.25); }
+  .tag-checkpoint { background: rgba(0,230,118,0.12); color: var(--easy); border: 1px solid rgba(0,230,118,0.25); }
+  .tag-assessment { background: rgba(255,153,0,0.12); color: var(--aws-orange); border: 1px solid rgba(255,153,0,0.3); }
+  .expand-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 1rem; flex-shrink: 0; }
+  .expand-btn:hover { border-color: var(--aws-orange); color: var(--aws-orange); }
+  .module-body { display: none; padding: 32px; }
+  .module-card.expanded .module-body { display: block; }
+  .section-label { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; margin-top: 32px; }
+  .section-label:first-child { margin-top: 0; }
+  .section-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+  .section-icon.hands { background: rgba(0,180,216,0.15); }
+  .section-icon.linux { background: rgba(255,82,82,0.12); }
+  .section-icon.check { background: rgba(0,230,118,0.12); }
+  .section-icon.assess { background: rgba(255,153,0,0.12); }
+  .section-title { font-size: 0.95rem; font-weight: 700; }
+  .section-sub { font-size: 0.75rem; color: var(--muted); }
+  .steps { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+  .step { display: flex; gap: 16px; align-items: flex-start; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,153,0,0.15); border: 1px solid rgba(255,153,0,0.3); color: var(--aws-orange); font-size: 0.72rem; font-weight: 700; font-family: 'Space Mono', monospace; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-content h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+  .step-content p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+  .code-block { background: #0d1117; border: 1px solid #1e3a5f; border-radius: 12px; padding: 20px; margin: 12px 0; position: relative; font-family: 'Space Mono', monospace; font-size: 0.8rem; overflow-x: auto; }
+  .code-block .comment { color: #6a9955; }
+  .code-block .cmd { color: #79c0ff; }
+  .code-block .flag { color: #ff7b72; }
+  .code-block .arg { color: #ffa657; }
+  .code-block .output { color: #7ee787; }
+  .code-block .prompt { color: var(--aws-orange); margin-right: 8px; }
+  .code-line { display: flex; align-items: flex-start; margin-bottom: 6px; flex-wrap: wrap; }
+  .code-line:last-child { margin-bottom: 0; }
+  .copy-btn { position: absolute; top: 12px; right: 12px; background: rgba(255,153,0,0.1); border: 1px solid rgba(255,153,0,0.2); color: var(--aws-orange); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; font-family: 'Syne', sans-serif; font-weight: 700; transition: all 0.2s; }
+  .copy-btn:hover { background: rgba(255,153,0,0.2); }
+  .tasks-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .task-card { border-radius: 14px; padding: 20px; border: 1px solid; }
+  .task-card.easy { background: rgba(0,230,118,0.06); border-color: rgba(0,230,118,0.2); }
+  .task-card.medium { background: rgba(255,167,38,0.06); border-color: rgba(255,167,38,0.2); }
+  .task-card.hard { background: rgba(255,82,82,0.06); border-color: rgba(255,82,82,0.2); }
+  .task-difficulty { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+  .task-card.easy .task-difficulty { color: var(--easy); }
+  .task-card.medium .task-difficulty { color: var(--medium); }
+  .task-card.hard .task-difficulty { color: var(--hard); }
+  .task-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; }
+  .task-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+  .task-check { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--muted); cursor: pointer; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: transparent; font-family: 'Syne', sans-serif; font-weight: 600; transition: all 0.2s; width: 100%; justify-content: center; }
+  .task-card.easy .task-check:hover { background: rgba(0,230,118,0.1); color: var(--easy); border-color: rgba(0,230,118,0.3); }
+  .task-card.medium .task-check:hover { background: rgba(255,167,38,0.1); color: var(--medium); border-color: rgba(255,167,38,0.3); }
+  .task-card.hard .task-check:hover { background: rgba(255,82,82,0.1); color: var(--hard); border-color: rgba(255,82,82,0.3); }
+  .checkpoint-box { background: rgba(0,230,118,0.05); border: 1px solid rgba(0,230,118,0.2); border-radius: 14px; padding: 20px 24px; margin-bottom: 24px; }
+  .checkpoint-title { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 700; color: var(--easy); margin-bottom: 12px; }
+  .checkpoint-items { display: flex; flex-direction: column; gap: 8px; }
+  .checkpoint-item { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: var(--muted); cursor: pointer; padding: 6px 0; transition: color 0.2s; }
+  .checkpoint-item:hover { color: var(--text); }
+  .checkbox { width: 18px; height: 18px; border: 1.5px solid var(--border); border-radius: 5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; font-size: 0.7rem; }
+  .checkpoint-item.checked .checkbox { background: var(--easy); border-color: var(--easy); color: #000; }
+  .assessment-box { background: rgba(255,153,0,0.05); border: 1px solid rgba(255,153,0,0.2); border-radius: 14px; padding: 24px; }
+  .assessment-title { font-size: 0.95rem; font-weight: 700; color: var(--aws-orange); margin-bottom: 16px; }
+  .quiz-question { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .quiz-question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-q { font-size: 0.88rem; font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-size: 0.82rem; transition: all 0.2s; background: transparent; color: var(--text); text-align: left; font-family: 'Syne', sans-serif; width: 100%; }
+  .quiz-option:hover { border-color: var(--aws-orange); background: rgba(255,153,0,0.06); }
+  .quiz-option.correct { border-color: var(--easy); background: rgba(0,230,118,0.1); color: var(--easy); }
+  .quiz-option.wrong { border-color: var(--hard); background: rgba(255,82,82,0.1); color: var(--hard); }
+  .option-letter { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.05); font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'Space Mono', monospace; }
+  .info-box { background: rgba(0,180,216,0.05); border: 1px solid rgba(0,180,216,0.2); border-radius: 10px; padding: 14px 18px; font-size: 0.82rem; color: var(--accent-blue); margin: 12px 0; display: flex; gap: 10px; align-items: flex-start; }
+  footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 2rem; text-align: center; color: var(--muted); font-size: 0.8rem; }
+  footer span { color: var(--aws-orange); }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .main { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .tasks-grid { grid-template-columns: 1fr; }
+    nav { display: none; }
+  }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
 </head>
-
 <body>
 
+<div class="progress-bar-top" id="progressBarTop"></div>
+
 <header>
-  <h1>AWS Cloud Practitioner Complete Guide</h1>
-  <p>Hands-On | Interview Questions | Linux Practice</p>
+  <div class="header-inner">
+    <a class="logo" href="#"><div class="logo-icon">☁️</div>AWS Junior Associate</a>
+    <nav>
+      <a onclick="document.getElementById('modules').scrollIntoView({behavior:'smooth'})">Modules</a>
+      <a onclick="document.getElementById('linux-section').scrollIntoView({behavior:'smooth'})">Linux</a>
+      <a onclick="document.getElementById('assess-section').scrollIntoView({behavior:'smooth'})">Assessments</a>
+      <a onclick="document.getElementById('tasks-section').scrollIntoView({behavior:'smooth'})">Tasks</a>
+    </nav>
+    <div style="font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--aws-orange);">Batch: 01 Dec 2025</div>
+  </div>
 </header>
 
-<nav>
-  <a href="#ec2">EC2</a>
-  <a href="#s3">S3</a>
-  <a href="#vpc">VPC</a>
-  <a href="#linux">Linux</a>
-  <a href="#tasks">Tasks</a>
-</nav>
+<div class="hero">
+  <div>
+    <div class="hero-badge"><div class="pulse"></div>Active Course</div>
+    <h1>AWS Junior Cloud<br><span>Computing Associate</span></h1>
+    <p class="hero-desc">Networking முதல் Cloud deployment வரை — step-by-step hands-on labs, Linux commands, checkpoints, மற்றும் assessments உடன் AWS learn பண்ணுங்க.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">12</div><div class="stat-label">Modules</div></div>
+      <div class="stat"><div class="stat-num">48+</div><div class="stat-label">Hands-On</div></div>
+      <div class="stat"><div class="stat-num">36+</div><div class="stat-label">Linux Cmds</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Levels</div></div>
+    </div>
+    <div class="hero-btns">
+      <button class="btn btn-primary" onclick="document.querySelector('.module-card').classList.add('expanded');document.querySelector('.module-card .expand-btn').textContent='▲'">▶ Start Learning</button>
+      <a class="btn btn-ghost" href="https://github.com" target="_blank">⭐ GitHub</a>
+    </div>
+  </div>
+  <div>
+    <div class="progress-card">
+      <h3>📊 Course Progress</h3>
+      <div class="module-progress">
+        <div class="mod-item"><div class="mod-dot done"></div><span class="mod-name">Networking Basics</span><span class="mod-pct">100%</span></div>
+        <div class="mod-item"><div class="mod-dot done"></div><span class="mod-name">Switching & Routing</span><span class="mod-pct">100%</span></div>
+        <div class="mod-item"><div class="mod-dot active"></div><span class="mod-name">Enterprise Networking</span><span class="mod-pct">60%</span></div>
+        <div class="mod-item"><div class="mod-dot todo"></div><span class="mod-name">Red Hat Admin</span><span class="mod-pct">0%</span></div>
+        <div class="mod-item"><div class="mod-dot todo"></div><span class="mod-name">AWS Cloud & VPC</span><span class="mod-pct">0%</span></div>
+        <div class="mod-item"><div class="mod-dot todo"></div><span class="mod-name">IAM & EC2</span><span class="mod-pct">0%</span></div>
+      </div>
+      <div class="overall-progress">
+        <div class="overall-progress-label"><span style="font-size:0.8rem;font-weight:700;">Overall</span><span style="font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--aws-orange);">35%</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:35%"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<section id="ec2">
-  <h2>Amazon EC2</h2>
-  <p><b>Definition:</b> Virtual server in AWS.</p>
-  <p><b>Use Case:</b> Host websites and backend applications.</p>
+<div class="main" id="modules">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">All Modules</div>
+      <div class="module-nav">
+        <div class="module-nav-item active" onclick="setActive(this)"><span class="nav-check">✓</span><span class="nav-num">01</span>Intro to Networks</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-check">✓</span><span class="nav-num">02</span>Switching & Routing</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-num">03</span>Enterprise Networking</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-num">04</span>Red Hat Admin I</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-num">05</span>Red Hat Admin II</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-num">06</span>Intro to Cloud</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-num">07</span>Virtual Private Cloud</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-num">08</span>NAT Gateway</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-num">09</span>Network ACL</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-num">10</span>EC2 & EBS</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-num">11</span>IAM</div>
+        <div class="module-nav-item" onclick="setActive(this)"><span class="nav-num">12</span>S3, CloudWatch & Route53</div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Legend</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:0.78rem;">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="width:12px;height:12px;background:rgba(0,180,216,0.4);border-radius:3px;display:inline-block;"></span> Hands-On Lab</div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="width:12px;height:12px;background:rgba(255,82,82,0.4);border-radius:3px;display:inline-block;"></span> Linux Commands</div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="width:12px;height:12px;background:rgba(0,230,118,0.4);border-radius:3px;display:inline-block;"></span> Checkpoint</div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="width:12px;height:12px;background:rgba(255,153,0,0.4);border-radius:3px;display:inline-block;"></span> Assessment</div>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="color:var(--easy);font-weight:700;">🟢</span> Easy Task</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="color:var(--medium);font-weight:700;">🟡</span> Medium Task</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--hard);font-weight:700;">🔴</span> Hard Task</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <h3>Hands-On Steps</h3>
-  <ol>
-    <li>Launch Instance</li>
-    <li>Select Amazon Linux</li>
-    <li>Choose t2.micro</li>
-    <li>Allow HTTP & SSH</li>
-    <li>Launch</li>
-  </ol>
+  <div class="content">
 
-  <h3>Install Web Server</h3>
-  <pre>
-sudo yum install httpd -y
-sudo systemctl start httpd
-echo "AWS EC2 Working" | sudo tee /var/www/html/index.html
-  </pre>
+    <!-- MODULE 1 -->
+    <div class="module-card" id="m1">
+      <div class="module-header" onclick="toggle('m1')">
+        <div class="module-header-left">
+          <div class="module-icon">🌐</div>
+          <div class="module-meta">
+            <h2>Module 1: Introduction to Networks</h2>
+            <div class="module-tags">
+              <span class="tag tag-hands">Hands-On</span>
+              <span class="tag tag-linux">Linux</span>
+              <span class="tag tag-checkpoint">Checkpoint</span>
+              <span class="tag tag-assessment">Assessment</span>
+            </div>
+          </div>
+        </div>
+        <button class="expand-btn">▼</button>
+      </div>
+      <div class="module-body">
+        <div class="section-label">
+          <div class="section-icon hands">🔬</div>
+          <div><div class="section-title">Hands-On Lab — Network Basics</div><div class="section-sub">IP configuration & connectivity testing</div></div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">01</div><div class="step-content"><h4>Network Interface Identify பண்ணுங்க</h4><p>Terminal open பண்ணி <code>ip addr show</code> run பண்ணுங்க. eth0 (wired) மற்றும் lo (loopback 127.0.0.1) interfaces காண்பிக்கும். உங்கள் IP address note பண்ணுங்க.</p></div></div>
+          <div class="step"><div class="step-num">02</div><div class="step-content"><h4>Subnet Mask புரிஞ்சுக்கோங்க</h4><p>192.168.1.0/24 → /24 = 255.255.255.0. இந்த network-ல் 256 addresses இருக்கும் — 1 network, 1 broadcast, 254 usable hosts. /25 என்றால் 126 hosts, /26 என்றால் 62 hosts.</p></div></div>
+          <div class="step"><div class="step-num">03</div><div class="step-content"><h4>Ping Test பண்ணுங்க</h4><p>Gateway-க்கு ping பண்ணுங்க: <code>ping -c 4 192.168.1.1</code>. 4 packets send → 4 receive ஆனால் = network OK. "Request timeout" வந்தால் = connectivity problem.</p></div></div>
+          <div class="step"><div class="step-num">04</div><div class="step-content"><h4>Traceroute — Path பார்க்க</h4><p><code>traceroute google.com</code> run பண்ணுங்க. உங்கள் packet எந்த routers-வழியாக travel பண்றது என்று காட்டும். ஒவ்வொரு line = ஒரு hop (router).</p></div></div>
+          <div class="step"><div class="step-num">05</div><div class="step-content"><h4>DNS Lookup</h4><p><code>nslookup google.com</code> அல்லது <code>dig google.com</code> run பண்ணுங்க. Domain name → IP address convert ஆவதை பாருங்க. DNS server 8.8.8.8 use பண்றால் Google DNS.</p></div></div>
+        </div>
 
-  <h3>Interview Question</h3>
-  <p>Q: What is Security Group?<br>
-     A: Stateful firewall attached to instance.</p>
-</section>
+        <div class="section-label" id="linux-section">
+          <div class="section-icon linux">🐧</div>
+          <div><div class="section-title">Linux Commands — Detailed Explanation</div><div class="section-sub">Every command with output explanation</div></div>
+        </div>
+        <div class="info-box"><span>💡</span><span>ஒவ்வொரு command-ம் terminal-ல் type பண்ணி practice பண்ணுங்க. Output பார்த்து understand பண்ணுங்க. Questions வந்தால் note பண்ணிக்கோங்க.</span></div>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <div class="code-line"><span class="comment"># ═══ 1. NETWORK INTERFACES ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">ip addr show</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># All interfaces list</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">ip addr show eth0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Specific interface</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">ifconfig</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Old method (net-tools)</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># ═══ 2. CONNECTIVITY TEST ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">ping</span> <span class="flag">-c 4</span> <span class="arg">8.8.8.8</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># -c = count (4 packets)</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">ping</span> <span class="flag">-c 4 -i 0.5</span> <span class="arg">google.com</span>&nbsp;<span class="comment"># -i = interval (0.5 sec)</span></div>
+          <div class="code-line"><span class="output"># Output example:</span></div>
+          <div class="code-line"><span class="output"># 64 bytes from 8.8.8.8: icmp_seq=1 ttl=118 time=12.3 ms</span></div>
+          <div class="code-line"><span class="output"># time= value குறைவாக இருந்தால் network fast</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># ═══ 3. ROUTING TABLE ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">ip route show</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># All routes</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">route</span> <span class="flag">-n</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Numeric format</span></div>
+          <div class="code-line"><span class="output"># "default via 192.168.1.1" = default gateway</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># ═══ 4. TRACEROUTE ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">traceroute</span> <span class="arg">google.com</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">tracepath</span> <span class="arg">google.com</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Alternative (no sudo needed)</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># ═══ 5. DNS LOOKUP ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">nslookup</span> <span class="arg">google.com</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">dig</span> <span class="arg">google.com</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Detailed DNS info</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">dig</span> <span class="arg">google.com</span> <span class="flag">+short</span>&nbsp;&nbsp;&nbsp;<span class="comment"># IP only</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">cat</span> <span class="arg">/etc/resolv.conf</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># DNS server config file</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># ═══ 6. OPEN PORTS ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">netstat</span> <span class="flag">-tuln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># -t=TCP -u=UDP -l=listening -n=numeric</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">ss</span> <span class="flag">-tuln</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Modern replacement for netstat</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># ═══ 7. HOSTNAME ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">hostname</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Machine name</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">hostname</span> <span class="flag">-I</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># All IPs</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">cat</span> <span class="arg">/etc/hosts</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Local DNS mappings</span></div>
+        </div>
 
-<section id="s3">
-  <h2>Amazon S3</h2>
-  <p><b>Definition:</b> Object storage service.</p>
+        <div class="section-label" id="tasks-section">
+          <div class="section-icon assess">🎯</div>
+          <div><div class="section-title">Practice Tasks</div><div class="section-sub">Easy → Medium → Hard — ஒவ்வொன்னா complete பண்ணுங்க</div></div>
+        </div>
+        <div class="tasks-grid">
+          <div class="task-card easy">
+            <div class="task-difficulty">🟢 Easy</div>
+            <div class="task-title">Basic Network Info</div>
+            <div class="task-desc"><code>ip addr show</code> run பண்ணி உங்கள் IP address, subnet mask note பண்ணுங்க. <code>ping -c 4 8.8.8.8</code> run பண்ணி screenshot எடுங்க.</div>
+            <button class="task-check" onclick="markDone(this)">☐ Mark Complete</button>
+          </div>
+          <div class="task-card medium">
+            <div class="task-difficulty">🟡 Medium</div>
+            <div class="task-title">Subnet Calculation</div>
+            <div class="task-desc">192.168.10.0/26 network-க்கு: Subnet mask, usable hosts count, first IP, last IP, broadcast address calculate பண்ணுங்க. Steps எழுதுங்க.</div>
+            <button class="task-check" onclick="markDone(this)">☐ Mark Complete</button>
+          </div>
+          <div class="task-card hard">
+            <div class="task-difficulty">🔴 Hard</div>
+            <div class="task-title">Bash Script — Network Monitor</div>
+            <div class="task-desc">5 different IPs-க்கு ping பண்ணி, UP/DOWN status print பண்ண bash script எழுதுங்க. Loop, if-else, exit code use பண்ணுங்க.</div>
+            <button class="task-check" onclick="markDone(this)">☐ Mark Complete</button>
+          </div>
+        </div>
+        <div class="code-block" style="margin-bottom:28px;">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <div class="code-line"><span class="comment"># Hard Task Solution — Network Monitor Script</span></div>
+          <div class="code-line"><span class="comment">#!/bin/bash</span></div>
+          <br>
+          <div class="code-line"><span class="arg">HOSTS</span>=("8.8.8.8" "8.8.4.4" "192.168.1.1" "192.168.1.254" "10.0.0.1")</div>
+          <br>
+          <div class="code-line"><span class="cmd">for</span> <span class="arg">host</span> <span class="cmd">in</span> "${HOSTS[@]}"; <span class="cmd">do</span></div>
+          <div class="code-line">&nbsp;&nbsp;<span class="cmd">ping</span> <span class="flag">-c 1 -W 2</span> <span class="arg">$host</span> &gt; /dev/null 2&gt;&amp;1</div>
+          <div class="code-line">&nbsp;&nbsp;<span class="cmd">if</span> [ $? -eq 0 ]; <span class="cmd">then</span></div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="output">echo "✅ $host — UP"</span></div>
+          <div class="code-line">&nbsp;&nbsp;<span class="cmd">else</span></div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="accent-red">echo "❌ $host — DOWN"</span></div>
+          <div class="code-line">&nbsp;&nbsp;<span class="cmd">fi</span></div>
+          <div class="code-line"><span class="cmd">done</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># Run: chmod +x monitor.sh && ./monitor.sh</span></div>
+        </div>
 
-  <h3>Hands-On</h3>
-  <ol>
-    <li>Create Bucket</li>
-    <li>Upload index.html</li>
-    <li>Enable Static Website Hosting</li>
-  </ol>
+        <div class="section-label" id="assess-section">
+          <div class="section-icon check">✅</div>
+          <div><div class="section-title">Checkpoint — இந்த module தெரியுமா?</div></div>
+        </div>
+        <div class="checkpoint-box">
+          <div class="checkpoint-title">✅ Module 1 Checkpoint</div>
+          <div class="checkpoint-items">
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>OSI Model 7 layers order-ல் சொல்ல தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>IP address vs MAC address வித்தியாசம் explain பண்ண தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>/24, /25, /26 subnet hosts count சொல்ல தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>ping, traceroute, netstat output படிக்க தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>DNS என்றால் என்ன? nslookup, dig use பண்ண தெரியுமா?</div>
+          </div>
+        </div>
 
-  <h3>Interview Question</h3>
-  <p>Q: Difference between S3 and EBS?<br>
-     A: S3 = Object storage, EBS = Block storage.</p>
-</section>
+        <div class="section-label">
+          <div class="section-icon assess">📝</div>
+          <div><div class="section-title">Final Assessment</div></div>
+        </div>
+        <div class="assessment-box">
+          <div class="assessment-title">📝 Module 1 Final Assessment</div>
+          <div class="quiz-question">
+            <div class="quiz-q">Q1. 192.168.1.0/24 network-ல் எத்தனை usable host IPs?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">A</span>256</button>
+              <button class="quiz-option" onclick="ans(this,true)"><span class="option-letter">B</span>254</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">C</span>255</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">D</span>128</button>
+            </div>
+          </div>
+          <div class="quiz-question">
+            <div class="quiz-q">Q2. ping -c 4 command-ல் -c 4 என்றால் என்ன?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">A</span>4 seconds timeout</button>
+              <button class="quiz-option" onclick="ans(this,true)"><span class="option-letter">B</span>4 packets மட்டும் send பண்ணு</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">C</span>4 bytes packet size</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">D</span>4 connections open</button>
+            </div>
+          </div>
+          <div class="quiz-question">
+            <div class="quiz-q">Q3. OSI Model-ல் TCP operate ஆகும் layer எது?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">A</span>Layer 2 — Data Link</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">B</span>Layer 3 — Network</button>
+              <button class="quiz-option" onclick="ans(this,true)"><span class="option-letter">C</span>Layer 4 — Transport</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">D</span>Layer 7 — Application</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<section id="vpc">
-  <h2>Amazon VPC</h2>
-  <p><b>Definition:</b> Private network inside AWS.</p>
+    <!-- MODULE 10 EC2 -->
+    <div class="module-card" id="m10">
+      <div class="module-header" onclick="toggle('m10')">
+        <div class="module-header-left">
+          <div class="module-icon">⚡</div>
+          <div class="module-meta">
+            <h2>Module 10: EC2 & Elastic Block Storage</h2>
+            <div class="module-tags">
+              <span class="tag tag-hands">Hands-On</span>
+              <span class="tag tag-linux">Linux</span>
+              <span class="tag tag-checkpoint">Checkpoint</span>
+              <span class="tag tag-assessment">Assessment</span>
+            </div>
+          </div>
+        </div>
+        <button class="expand-btn">▼</button>
+      </div>
+      <div class="module-body">
+        <div class="section-label">
+          <div class="section-icon hands">🔬</div>
+          <div><div class="section-title">Hands-On Lab — EC2 Instance Launch & Connect</div></div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">01</div><div class="step-content"><h4>AWS Console Login & EC2 Navigate</h4><p>AWS Console login பண்ணி, search bar-ல் "EC2" type பண்ணுங்க. Region: ap-south-1 (Mumbai) select பண்ணுங்க — India-க்கு latency குறைவாக இருக்கும்.</p></div></div>
+          <div class="step"><div class="step-num">02</div><div class="step-content"><h4>Launch Instance</h4><p>"Launch Instance" button click → Name: "my-first-ec2" → AMI: Amazon Linux 2023 → Instance type: t2.micro (Free tier eligible ✓). Free tier-ல் charge வராது.</p></div></div>
+          <div class="step"><div class="step-num">03</div><div class="step-content"><h4>Key Pair Create பண்ணுங்க</h4><p>"Create new key pair" → Name: "my-keypair" → Type: RSA → Format: .pem → Download பண்ணுங்க. ⚠️ இந்த file-ஐ delete பண்ணாதீங்க! இல்லாவிட்டால் instance access-ஆகாது.</p></div></div>
+          <div class="step"><div class="step-num">04</div><div class="step-content"><h4>Security Group Configure</h4><p>SSH (port 22) → My IP select பண்ணுங்க. HTTP (port 80) → Anywhere add பண்ணுங்க (web server-க்கு). Security group = cloud firewall.</p></div></div>
+          <div class="step"><div class="step-num">05</div><div class="step-content"><h4>EBS Volume Attach</h4><p>EC2 → Volumes → Create Volume → Size: 8GB, Type: gp3 → Same AZ select பண்ணுங்க → Actions → Attach to instance.</p></div></div>
+          <div class="step"><div class="step-num">06</div><div class="step-content"><h4>SSH Connect & Web Server Setup</h4><p>Terminal-ல் key pair permission fix பண்ணி SSH connect பண்ணுங்க. Apache install பண்ணி web server start பண்ணுவோம்.</p></div></div>
+        </div>
 
-  <h3>Hands-On</h3>
-  <ol>
-    <li>Create VPC (10.0.0.0/16)</li>
-    <li>Create Public Subnet</li>
-    <li>Attach Internet Gateway</li>
-    <li>Add Route 0.0.0.0/0</li>
-  </ol>
+        <div class="section-icon linux" style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;float:left;margin-right:12px;margin-top:32px;"></div>
+        <div class="section-label">
+          <div class="section-icon linux">🐧</div>
+          <div><div class="section-title">Linux Commands — EC2 Management</div></div>
+        </div>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <div class="code-line"><span class="comment"># ═══ SSH CONNECT ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">chmod</span> <span class="arg">400 my-keypair.pem</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Permission: owner read-only</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">ssh</span> <span class="flag">-i</span> <span class="arg">my-keypair.pem ec2-user@<YOUR-PUBLIC-IP></span></div>
+          <div class="code-line"><span class="output"># ec2-user = Amazon Linux default username</span></div>
+          <div class="code-line"><span class="output"># ubuntu = Ubuntu AMI username</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># ═══ SYSTEM INFO ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">uname</span> <span class="flag">-a</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># OS version info</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">df</span> <span class="flag">-h</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Disk usage (-h = human readable)</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">free</span> <span class="flag">-h</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># RAM usage</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">nproc</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># CPU core count</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">top</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Live process monitor (q to quit)</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># ═══ EBS VOLUME MOUNT ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">lsblk</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># List block devices (attached volumes)</span></div>
+          <div class="code-line"><span class="output"># xvda = root volume, xvdf = attached EBS</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">sudo mkfs</span> <span class="flag">-t</span> <span class="arg">ext4 /dev/xvdf</span>&nbsp;<span class="comment"># Format as ext4</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">sudo mkdir</span> <span class="arg">/data</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Mount point create</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">sudo mount</span> <span class="arg">/dev/xvdf /data</span>&nbsp;&nbsp;<span class="comment"># Mount volume</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">df</span> <span class="flag">-h</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Verify mount</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># Auto-mount at reboot (/etc/fstab)</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">sudo bash -c</span> <span class="arg">'echo "/dev/xvdf /data ext4 defaults,nofail 0 2" >> /etc/fstab'</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># ═══ WEB SERVER INSTALL ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">sudo yum update</span> <span class="flag">-y</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Update packages</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">sudo yum install</span> <span class="arg">httpd -y</span>&nbsp;<span class="comment"># Apache install</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">sudo systemctl start</span> <span class="arg">httpd</span>&nbsp;<span class="comment"># Start service</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">sudo systemctl enable</span> <span class="arg">httpd</span><span class="comment"># Auto-start at reboot</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">sudo systemctl status</span> <span class="arg">httpd</span><span class="comment"># Check status (Active: running ✓)</span></div>
+          <br>
+          <div class="code-line"><span class="comment"># Test webpage</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">echo</span> <span class="arg">"&lt;h1&gt;Hello AWS!&lt;/h1&gt;"</span> <span class="flag">| sudo tee</span> <span class="arg">/var/www/html/index.html</span></div>
+          <div class="code-line"><span class="output"># Browser-ல் http://&lt;PUBLIC-IP&gt; type பண்ணுங்க</span></div>
+        </div>
 
-  <h3>Interview Question</h3>
-  <p>Q: Security Group vs NACL?<br>
-     A: SG = Stateful, NACL = Stateless.</p>
-</section>
+        <div class="tasks-grid">
+          <div class="task-card easy"><div class="task-difficulty">🟢 Easy</div><div class="task-title">EC2 Launch & SSH</div><div class="task-desc">t2.micro free tier instance launch பண்ணி SSH connect பண்ணுங்க. <code>uname -a</code> மற்றும் <code>df -h</code> output screenshot எடுங்க.</div><button class="task-check" onclick="markDone(this)">☐ Mark Complete</button></div>
+          <div class="task-card medium"><div class="task-difficulty">🟡 Medium</div><div class="task-title">EBS + Web Server</div><div class="task-desc">EBS volume attach → mount → Apache install → custom HTML page serve பண்ணுங்க. Public IP-ல் webpage load ஆகணும்.</div><button class="task-check" onclick="markDone(this)">☐ Mark Complete</button></div>
+          <div class="task-card hard"><div class="task-difficulty">🔴 Hard</div><div class="task-title">Auto Scaling Group</div><div class="task-desc">Launch Template → Auto Scaling Group (Min:1, Max:3) → CloudWatch CPU alarm 70% → Scale Out policy create பண்ணுங்க.</div><button class="task-check" onclick="markDone(this)">☐ Mark Complete</button></div>
+        </div>
+        <div class="checkpoint-box">
+          <div class="checkpoint-title">✅ EC2 Checkpoint</div>
+          <div class="checkpoint-items">
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>EC2 instance types (t2.micro, m5.large) வித்தியாசம் தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>Key pair public/private key concept explain பண்ண தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>EBS vs Instance Store வித்தியாசம் தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>Security Group inbound/outbound rules configure தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>EBS volume mount பண்ணி fstab-ல் auto-mount setup தெரியுமா?</div>
+          </div>
+        </div>
+        <div class="assessment-box">
+          <div class="assessment-title">📝 EC2 & EBS Final Assessment</div>
+          <div class="quiz-question">
+            <div class="quiz-q">Q1. EC2 instance STOP பண்ணினால் EBS data என்னாகும்?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">A</span>Delete ஆகும்</button>
+              <button class="quiz-option" onclick="ans(this,true)"><span class="option-letter">B</span>Persist ஆகும் (EBS retained)</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">C</span>S3-க்கு move ஆகும்</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">D</span>Snapshot create ஆகும்</button>
+            </div>
+          </div>
+          <div class="quiz-question">
+            <div class="quiz-q">Q2. SSH key pair file-க்கு என்ன permission set வேண்டும்?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">A</span>chmod 777</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">B</span>chmod 644</button>
+              <button class="quiz-option" onclick="ans(this,true)"><span class="option-letter">C</span>chmod 400</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">D</span>chmod 755</button>
+            </div>
+          </div>
+          <div class="quiz-question">
+            <div class="quiz-q">Q3. Free Tier-ல் எந்த EC2 instance type use பண்ணலாம்?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">A</span>m5.large</button>
+              <button class="quiz-option" onclick="ans(this,true)"><span class="option-letter">B</span>t2.micro</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">C</span>c5.xlarge</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">D</span>r5.2xlarge</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<section id="linux">
-  <h2>Linux Practice Commands</h2>
+    <!-- MODULE IAM -->
+    <div class="module-card" id="m11">
+      <div class="module-header" onclick="toggle('m11')">
+        <div class="module-header-left">
+          <div class="module-icon">🔐</div>
+          <div class="module-meta">
+            <h2>Module 11: AWS IAM — Identity & Access Management</h2>
+            <div class="module-tags">
+              <span class="tag tag-hands">Hands-On</span>
+              <span class="tag tag-checkpoint">Checkpoint</span>
+              <span class="tag tag-assessment">Assessment</span>
+            </div>
+          </div>
+        </div>
+        <button class="expand-btn">▼</button>
+      </div>
+      <div class="module-body">
+        <div class="section-label">
+          <div class="section-icon hands">🔬</div>
+          <div><div class="section-title">Hands-On Lab — IAM Users, Groups & Policies</div></div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">01</div><div class="step-content"><h4>IAM User Create</h4><p>IAM Console → Users → Add users → Username: "dev-user" → Console access enable → Custom password set பண்ணுங்க.</p></div></div>
+          <div class="step"><div class="step-num">02</div><div class="step-content"><h4>Group Create & Policy Attach</h4><p>"Developers" group create → "AmazonEC2ReadOnlyAccess" managed policy attach → dev-user-ஐ group-க்கு add பண்ணுங்க.</p></div></div>
+          <div class="step"><div class="step-num">03</div><div class="step-content"><h4>Custom Policy JSON Write</h4><p>Specific S3 bucket-க்கு மட்டும் access கொடுக்க custom JSON policy எழுதுவோம். Effect, Action, Resource — 3 main parts.</p></div></div>
+          <div class="step"><div class="step-num">04</div><div class="step-content"><h4>IAM Role Create</h4><p>EC2-க்கு IAM Role create பண்ணுங்க. Role attach பண்ணினால் EC2 instance S3 access credentials automatically பெறும் — hardcode பண்ண வேண்டாம்.</p></div></div>
+          <div class="step"><div class="step-num">05</div><div class="step-content"><h4>MFA Enable</h4><p>Security → root account & IAM user-க்கு MFA enable பண்ணுங்க. Google Authenticator app → QR code scan → 6-digit code enter.</p></div></div>
+        </div>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <div class="code-line"><span class="comment"># ═══ CUSTOM IAM POLICY (JSON) ═══</span></div>
+          <div class="code-line">{</div>
+          <div class="code-line">&nbsp;&nbsp;<span class="arg">"Version"</span>: <span class="output">"2012-10-17"</span>,</div>
+          <div class="code-line">&nbsp;&nbsp;<span class="arg">"Statement"</span>: [</div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;{</div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">"Sid"</span>: <span class="output">"AllowS3ReadMyBucket"</span>,</div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">"Effect"</span>: <span class="output">"Allow"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Allow or Deny</span></div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">"Action"</span>: [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// What actions allowed</span></div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="output">"s3:GetObject"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Download file</span></div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="output">"s3:ListBucket"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// List files</span></div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],</div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arg">"Resource"</span>: [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Which resources</span></div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="output">"arn:aws:s3:::my-bucket"</span>,</div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="output">"arn:aws:s3:::my-bucket/*"</span></div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</div>
+          <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+          <div class="code-line">&nbsp;&nbsp;]</div>
+          <div class="code-line">}</div>
+          <br>
+          <div class="code-line"><span class="comment"># ═══ AWS CLI — IAM Commands ═══</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">aws iam list-users</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">aws iam create-user</span> <span class="flag">--user-name</span> <span class="arg">dev-user</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">aws iam list-attached-user-policies</span> <span class="flag">--user-name</span> <span class="arg">dev-user</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">aws iam get-user</span> <span class="flag">--user-name</span> <span class="arg">dev-user</span></div>
+          <div class="code-line"><span class="prompt">$</span><span class="cmd">aws iam list-groups</span></div>
+        </div>
+        <div class="tasks-grid">
+          <div class="task-card easy"><div class="task-difficulty">🟢 Easy</div><div class="task-title">IAM User Create</div><div class="task-desc">IAM user create பண்ணி "AmazonS3ReadOnlyAccess" managed policy attach பண்ணுங்க. Console login verify பண்ணுங்க.</div><button class="task-check" onclick="markDone(this)">☐ Mark Complete</button></div>
+          <div class="task-card medium"><div class="task-difficulty">🟡 Medium</div><div class="task-title">Custom JSON Policy</div><div class="task-desc">Specific S3 bucket-க்கு read-only + other buckets deny custom policy JSON எழுதுங்க. Test பண்ணுங்க.</div><button class="task-check" onclick="markDone(this)">☐ Mark Complete</button></div>
+          <div class="task-card hard"><div class="task-difficulty">🔴 Hard</div><div class="task-title">EC2 IAM Role</div><div class="task-desc">EC2 instance-க்கு S3 access IAM Role create → attach → instance metadata API-வழியாக credentials verify பண்ணுங்க.</div><button class="task-check" onclick="markDone(this)">☐ Mark Complete</button></div>
+        </div>
+        <div class="checkpoint-box">
+          <div class="checkpoint-title">✅ IAM Checkpoint</div>
+          <div class="checkpoint-items">
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>User, Group, Role, Policy வித்தியாசம் explain பண்ண தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>Principle of Least Privilege என்றால் என்ன?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>Managed Policy vs Inline Policy வித்தியாசம் தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>JSON policy-ல் Effect, Action, Resource தெரியுமா?</div>
+            <div class="checkpoint-item" onclick="chk(this)"><div class="checkbox"></div>MFA enable பண்ண தெரியுமா? Root account protect பண்ண தெரியுமா?</div>
+          </div>
+        </div>
+        <div class="assessment-box">
+          <div class="assessment-title">📝 IAM Final Assessment</div>
+          <div class="quiz-question">
+            <div class="quiz-q">Q1. IAM Role vs IAM User — முக்கிய வித்தியாசம் என்ன?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">A</span>Role-க்கு password இருக்கும்</button>
+              <button class="quiz-option" onclick="ans(this,true)"><span class="option-letter">B</span>Role temporary credentials use பண்ணும்; services/users assume பண்ணலாம்</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">C</span>Role-ல் policy attach பண்ண முடியாது</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">D</span>Role மட்டும் EC2-க்கு use ஆகும்</button>
+            </div>
+          </div>
+          <div class="quiz-question">
+            <div class="quiz-q">Q2. IAM Policy "Effect": "Deny" என்றால் என்னாகும்?</div>
+            <div class="quiz-options">
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">A</span>Access allow ஆகும்</button>
+              <button class="quiz-option" onclick="ans(this,true)"><span class="option-letter">B</span>Allow policies இருந்தாலும் override பண்ணி access block ஆகும்</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">C</span>Policy ignore ஆகும்</button>
+              <button class="quiz-option" onclick="ans(this,false)"><span class="option-letter">D</span>Admin-க்கு மட்டும் access ஆகும்</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <h3>sudo</h3>
-  <pre>sudo yum update -y</pre>
+    <!-- PLACEHOLDER for remaining modules -->
+    <div style="background:var(--card);border:1px dashed var(--border);border-radius:20px;padding:48px;text-align:center;color:var(--muted);">
+      <div style="font-size:2.5rem;margin-bottom:16px;">🚧</div>
+      <div style="font-size:1.1rem;font-weight:800;margin-bottom:12px;color:var(--text);">9 More Modules Coming!</div>
+      <div style="font-size:0.85rem;line-height:1.8;max-width:500px;margin:0 auto;">Switching & Routing, Enterprise Networking, Red Hat Admin I & II, VPC, NAT Gateway, Network ACL, Load Balancer, S3, CloudWatch, Route53 & CloudFront — all with Hands-On Labs, Linux Commands, Tasks & Assessments.</div>
+      <div style="margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <span class="tag tag-hands">48+ Labs</span>
+        <span class="tag tag-linux">36+ Commands</span>
+        <span class="tag tag-checkpoint">Checkpoints</span>
+        <span class="tag tag-assessment">Assessments</span>
+      </div>
+    </div>
 
-  <h3>nano</h3>
-  <pre>sudo nano file.txt</pre>
-
-  <h3>vim</h3>
-  <pre>
-sudo vim file.txt
-i  (insert mode)
-:wq (save & exit)
-  </pre>
-
-  <h3>echo</h3>
-  <pre>
-echo "Hello AWS" > file.txt
-echo "New Line" >> file.txt
-  </pre>
-</section>
-
-<section id="tasks">
-  <h2>Practice Tasks</h2>
-
-  <ul>
-    <li>Launch EC2 and host webpage</li>
-    <li>Create S3 static website</li>
-    <li>Create IAM user with limited access</li>
-    <li>Create custom VPC</li>
-    <li>Setup budget alert</li>
-  </ul>
-</section>
+  </div>
+</div>
 
 <footer>
-  © 2026 Abdul Raheem | AWS Cloud Learning Platform
+  <div>AWS Junior Cloud Computing Associate — Batch: <span>01 Dec 2025</span></div>
+  <div style="margin-top:8px;font-size:0.72rem;opacity:0.5;">Cloud learners-க்காக தமிழில் உருவாக்கப்பட்டது ☁️</div>
 </footer>
 
+<script>
+function toggle(id) {
+  const c = document.getElementById(id);
+  const btn = c.querySelector('.expand-btn');
+  c.classList.toggle('expanded');
+  btn.textContent = c.classList.contains('expanded') ? '▲' : '▼';
+}
+function setActive(el) {
+  document.querySelectorAll('.module-nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+function chk(el) {
+  el.classList.toggle('checked');
+  el.querySelector('.checkbox').textContent = el.classList.contains('checked') ? '✓' : '';
+}
+function markDone(btn) {
+  btn.textContent = '✓ Completed!';
+  btn.style.opacity = '0.6';
+  btn.disabled = true;
+}
+function ans(btn, isCorrect) {
+  const opts = btn.parentElement.querySelectorAll('.quiz-option');
+  opts.forEach(o => o.disabled = true);
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) opts.forEach(o => { if (o.getAttribute('onclick').includes('true')) o.classList.add('correct'); });
+}
+function copyCode(btn) {
+  const lines = btn.parentElement.querySelectorAll('.code-line');
+  let text = '';
+  lines.forEach(l => text += l.innerText + '\n');
+  navigator.clipboard.writeText(text.trim()).then(() => { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); });
+}
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('progressBarTop').style.width = pct + '%';
+});
+</script>
 </body>
 </html>
