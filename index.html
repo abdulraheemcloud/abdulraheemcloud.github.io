@@ -401,6 +401,7 @@ body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans
 </div>
 
 <script>
+var taskFilter = 'all';
 // ═══════════════════════════════════════════════
 //  DATA — MODULES
 // ═══════════════════════════════════════════════
@@ -1372,7 +1373,7 @@ aws ec2 authorize-security-group-ingress \\
 # Allow SSH ONLY from your IP
 MY_IP=$(curl -s https://checkip.amazonaws.com)
 aws ec2 authorize-security-group-ingress \\
-  --group-id $WEB_SG --protocol tcp --port 22 --cidr ${MY_IP}/32
+  --group-id $WEB_SG --protocol tcp --port 22 --cidr $MY_IP/32
 
 # Create Security Group for App Servers (private)
 APP_SG=$(aws ec2 create-security-group \\
@@ -1762,7 +1763,7 @@ aws ec2 create-network-acl-entry \\
 # Find the current association ID for the subnet
 ASSOC_ID=$(aws ec2 describe-network-acls \\
   --filters "Name=association.subnet-id,Values=$PUB_SUBNET_A" \\
-  --query 'NetworkAcls[0].Associations[?SubnetId==\`'$PUB_SUBNET_A'\`].NetworkAclAssociationId' \\
+  --query 'NetworkAcls[0].Associations[?SubnetId==SUBNET_A_ID].NetworkAclAssociationId' \
   --output text)
 
 # Replace with our custom NACL
@@ -2592,7 +2593,6 @@ function updateProgress() {
 }
 
 // ── TASKS ──
-let taskFilter = 'all';
 const taskDone = {};
 
 function renderTasks(filter='all') {
